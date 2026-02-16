@@ -1,4 +1,4 @@
-const { calculateRisk } = require("../utils/mlCalculator");
+const { calculateRisk } = require("../utils/mlModel");
 
 //get alist of students who are at risk
 exports.getAllRisks = async (req, res) => {
