@@ -1,14 +1,15 @@
 const express = require("express");
 const {
-  predictSingleRisk,
-  getAllRisks,
+  enterScore,
+  getMyStudents,
+  getAtRiskStudents,
+  getAllStudents,
 } = require("../controllers/riskController");
 const router = express.Router();
 
-//list all students with risks
-router.get("/risks", getAllRisks);
-
-// calculate risk for a single student
-router.post("/predict", predictSingleRisk);
+router.post("/enter", enterScore);
+router.get("/students", getMyStudents);
+router.get("/at-risk", getAtRiskStudents);
+router.get("/all-students", getAllStudents);
 
 module.exports = router;
