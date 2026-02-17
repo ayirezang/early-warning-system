@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const Student = require("../models/student");
 const SubjectScore = require("../models/subjectScoreModel");
-const subjectAI = require("../ml/subjectAI");
+// const subjectAI = require("../ml/subjectAI");
 
 // 1. ENTER SCORE (AI predicts automatically)
 
@@ -43,11 +43,11 @@ exports.enterScore = async (req, res) => {
     }
 
     // USE AI TO PREDICT RISK
-    const aiPrediction = subjectAI.predictSubjectRisk(
-      student.attendance,
-      sbaScore,
-      examScore,
-    );
+    // const aiPrediction = subjectAI.predictSubjectRisk(
+    //   student.attendance,
+    //   sbaScore,
+    //   examScore,
+    // );
 
     // Save score with AI prediction
     const subjectScore = new SubjectScore({
@@ -81,7 +81,7 @@ exports.enterScore = async (req, res) => {
         warning:
           aiPrediction.riskCategory === "HIGH" ||
           aiPrediction.riskCategory === "CRITICAL"
-            ? `⚠️ AI predicts ${aiPrediction.riskCategory} risk: ${aiPrediction.riskPercent}% chance of failing`
+            ? `AI predicts ${aiPrediction.riskCategory} risk: ${aiPrediction.riskPercent}% chance of failing`
             : null,
       },
     });
