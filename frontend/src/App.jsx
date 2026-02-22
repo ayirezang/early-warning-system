@@ -1,10 +1,12 @@
 import React from "react";
-import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
+// import SignUp from "./pages/SignUp";
 
 const App = () => {
   return (
     <div>
-      <SignUp />
+      <Login />
+      {/* <SignUp /> */}
     </div>
   );
 };

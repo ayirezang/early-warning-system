@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { MdOutlineSchool } from "react-icons/md";
 import { MdOutlineEmail } from "react-icons/md";
 import { TbLockPassword } from "react-icons/tb";
@@ -6,6 +7,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { IoSchoolOutline } from "react-icons/io5";
 const SignUp = () => {
+  const [role, setRole] = useState("");
   return (
     <div className="min-h-screen flex flex-col">
       <header className="p-2 md:p-4 lg:p-4 border-b border-gray-300">
@@ -87,24 +89,63 @@ const SignUp = () => {
               </div>
             </div>
             {/**role */}
-            <div className="flex gap-4">
-              {/**admin */}
-              <div className="">
-                <label className="text-sm block mb-1">Admin</label>
-                <div className="flex  flex-1 gap-2 items-center border border-gray-400 rounded-lg px-4 py-2">
-                  <MdOutlineAdminPanelSettings />
-                  <input type="text" placeholder="Admin"></input>
-                </div>
-              </div>
-              {/**teacher */}
-              <div className="">
-                <label className="text-sm block mb-1">Teacher</label>
-                <div className="flex gap-2 items-center border border-gray-400 rounded-lg px-4 py-2 flex-1">
-                  <IoSchoolOutline />
-                  <input type="text" placeholder="Teacher"></input>
+            <div className="flex gap-4 ">
+              <div className="flex-1">
+                <label className="text-sm block mb-1">Your Role</label>
+                <div className="flex gap-4">
+                  {/* Admin Button */}
+                  <button
+                    type="button"
+                    onClick={() => setRole("admin")}
+                    className={`flex-1 flex gap-2 items-center justify-center border rounded-lg px-4 py-2 
+            ${
+              role === "admin"
+                ? "bg-blue-600 text-white border-blue-600" // selected style
+                : "border-gray-400 text-gray-600" // unselected style
+            }`}
+                  >
+                    <MdOutlineAdminPanelSettings />
+                    Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRole("teacher")}
+                    className={`flex-1 flex gap-2 items-center justify-center border rounded-lg px-4 py-2 
+            ${
+              role === "teacher"
+                ? "bg-blue-600 text-white border-blue-600" // selected style
+                : "border-gray-400 text-gray-600" // unselected style
+            }`}
+                  >
+                    <IoSchoolOutline />
+                    Teacher
+                  </button>
                 </div>
               </div>
             </div>
+            {/**subject role */}
+            {role === "teacher" && (
+              <div>
+                <label className="text-sm block mb-1 ">Subject</label>
+                <select className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:border-blue-300 text-gray-500">
+                  <option value="">select subject</option>
+                  <option value="maths">Mathematics</option>
+                  <option value="science">Integrated Science</option>
+                  <option value="english">English Language</option>
+                  <option value="social studies">Social Studies</option>
+                </select>
+              </div>
+            )}
+            {/**create my account button */}
+            <button className="w-full rounded-lg px-4 py-2 bg-blue-600 text-white cursor-pointer">
+              Create My Account
+            </button>
+            <p className="text-center cursor-pointer">
+              Already have an account?{" "}
+              <span className="text-blue-500">
+                <Link to="/login">Log in </Link>
+              </span>
+            </p>
           </form>
         </div>
       </main>
