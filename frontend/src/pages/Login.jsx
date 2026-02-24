@@ -27,9 +27,9 @@ const Login = () => {
           </div>
 
           {/**form  */}
-          <form className="space-y-4">
+          <form className="space-y-6">
             {/** email*/}
-            <div className="">
+            <div className="space-y-4">
               <label className="text-sm block mb-1">Email</label>
               <div className="flex gap-2 items-center border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:boder-blue-300 ">
                 <MdOutlineEmail />
@@ -52,13 +52,13 @@ const Login = () => {
                 </div>
               </div>
             </div>
-            <button className=" w-full px-4 py-2 border border-gray-400 rounded-lg bg-blue-600 text-white">
+            <button className=" w-full px-4 py-2 border border-gray-400 rounded-lg bg-blue-600 text-white cursor-pointer">
               Login to Dashboard
             </button>
-            <p className="text-center">
+            <p className="text-center cursor-pointer">
               Dont have an account yet?{" "}
-              <span className="text-blue-300">
-                <Link to="/signup"> Signup</Link>
+              <span className="text-blue-300 cursor-pointer">
+                <Link to="/dashboard"> Signup</Link>
               </span>
             </p>
           </form>

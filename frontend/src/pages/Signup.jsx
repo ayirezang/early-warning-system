@@ -14,7 +14,7 @@ const SignUp = () => {
         <h2 className="text-center">Create Account</h2>
       </header>
       {/**main content */}
-      <main className="flex flex-1 items-cemter justify-center p-4 md:p-6">
+      <main className="flex flex-1 items-center justify-center p-4 md:p-6">
         {/**whole content */}
         <div className="w-full max-w-lg p-4 md:p-6 lg:p-8">
           <div className="flex flex-col items-center mb-6 ">
