@@ -5,15 +5,15 @@ import { CiLogin } from "react-icons/ci";
 const Header = () => {
   return (
     <div>
-      <Header
-        className="bg-blue border-b border-gray-200 shadow-md 
+      <header
+        className=" border-b border-gray-200 shadow-md 
       "
       >
         <div className="max-w-7xl mx-auto px-4  sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3 ">
               <div className="bg-blue-600 p-2 rounded-lg">
-                <FiShield className="w-6 h-6 text-white" />
+                <FiShield className="w-8 h-8 text-white" />
               </div>
               {/**erly warning  */}
               <div>
@@ -27,17 +27,17 @@ const Header = () => {
             </div>
             {/**name and subject */}
             <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p>Ms.Pat Ayirezang</p>
-                <p>Mathematics Teacher</p>
+              <div className="">
+                <p className="text-black text-lg">Ms.Pat Ayirezang</p>
+                <p className="text-xs">Mathematics Teacher</p>
               </div>
               <button className="p-2 hover:bg-gray-100 rounded-lg ">
-                <CiLogin className="w-5 h-5 text-gray-500" />
+                <CiLogin className="w-8 h-8 text-gray-500" />
               </button>
             </div>
           </div>
         </div>
-      </Header>
+      </header>
     </div>
   );
 };
