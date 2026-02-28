@@ -9,7 +9,15 @@ import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { IoSchoolOutline } from "react-icons/io5";
 const SignUp = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const [error, setError] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+    subject: "",
+  });
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -28,12 +36,14 @@ const SignUp = () => {
     setError("");
   };
   //role change
-  const handleRoleSelect = () => {
+  const handleRoleSelect = (role) => {
     setFormData((prev) => ({ ...prev, role, subject: "" }));
   };
 
   //handle submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
     //basic validation
     if (!formData.firstName.trim() || !formData.lastName.trim()) {
       setError("firstname & lastname is required");
@@ -95,22 +105,30 @@ const SignUp = () => {
                 <label className="text-sm block mb-1">First name</label>
                 <input
                   type="text"
+                  name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
                   placeholder="Pat"
                   className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-300 "
                 ></input>
+                {error.firstName && (
+                  <p className="text-red-500 text-sm mt-1">{error.firstName}</p>
+                )}
               </div>
               {/**last nmae */}
               <div className="flex-1">
                 <label className="text-sm block mb-1">Last name</label>
                 <input
                   type="text"
+                  name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
                   placeholder="Joe"
                   className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-300 "
                 ></input>
+                {error.lastName && (
+                  <p className="text-red-500 text-sm mt-1">{error.lastName}</p>
+                )}
               </div>
             </div>
             {/**email */}
@@ -120,11 +138,15 @@ const SignUp = () => {
                 <MdOutlineEmail />
                 <input
                   type="email"
+                  name="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="pat@gmail.com "
                   className="focus:outline-none   flex-1"
                 ></input>
+                {error.email && (
+                  <p className="text-red-500 text-sm mt-1">{error.email}</p>
+                )}
               </div>
             </div>
             {/**password */}
@@ -134,11 +156,15 @@ const SignUp = () => {
                 <TbLockPassword />
                 <input
                   type="password"
+                  name="password"
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="*******"
                   className="flex-1 "
                 ></input>
+                {error.password && (
+                  <p className="text-red-500 text-sm mt-1">{error.password}</p>
+                )}
                 <IoEyeOutline />
               </div>
             </div>
@@ -149,11 +175,17 @@ const SignUp = () => {
                 <TbLockPassword />
                 <input
                   type="password"
+                  name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="*******"
                   className="flex-1 "
                 ></input>
+                {error.confirmPassword && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {error.confirmPassword}
+                  </p>
+                )}
                 <IoEyeOutline />
               </div>
             </div>
