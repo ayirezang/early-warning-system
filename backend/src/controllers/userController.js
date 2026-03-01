@@ -18,13 +18,18 @@ const signUp = async (req, res) => {
     });
   }
 
-  const { firstName, lastName, email, password, subject } = req.body;
+  const { firstName, lastName, email, password, role, subject } = req.body;
 
   try {
-    if (!firstName || !lastName || !email || !password || !subject) {
+    if (!firstName || !lastName || !email || !password || !role) {
       return res
         .status(400)
         .json({ sucess: false, error: "all fields are required" });
+    }
+    if (role === "teacher" && !subject) {
+      return res
+        .status(400)
+        .json({ success: false, error: "subject is requred for teachers" });
     }
     // Check if email already exists
     const existingUser = await userModel.findOne({ email });
@@ -33,23 +38,20 @@ const signUp = async (req, res) => {
         .status(400)
         .json({ success: false, error: "email already exist" });
     }
-
-    const teacher = new user({
+    const newUser = new userModel({
       firstName,
       lastName,
       email,
       password,
-      role: "Teacher",
-      subject,
+      role,
+      subject: role === "teacher" ? subject : undefined,
     });
-    await teacher.save();
+    const savedUser = await newUser.save();
 
-    // Create token after user is saved
     const token = jwt.sign(
-      { id: teacher._id, role: teacher.role },
+      { id: savedUser._id, role: savedUser.role },
       process.env.SECRET_KEY || "your-secret-key",
-      expiresIn,
-      "7d",
+      { expiresIn: "7d" },
     );
 
     res
@@ -62,8 +64,10 @@ const signUp = async (req, res) => {
       .json({
         message: "user created successfully",
         user: {
-          username: savedUser.username,
+          firstName: savedUser.firstName,
+          lastName: savedUser.lastName,
           email: savedUser.email,
+          role: savedUser.role,
         },
       });
   } catch (error) {
@@ -74,6 +78,7 @@ const signUp = async (req, res) => {
     });
   }
 };
+//login
 
 const loginIn = async (req, res) => {
   try {
@@ -92,9 +97,13 @@ const loginIn = async (req, res) => {
     }
 
     // Create token
-    const token = jwt.sign({ id: existingUser._id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: existingUser._id, role: existingUser.role },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "1h",
+      },
+    );
 
     res
       .cookie("token", token, {
@@ -106,7 +115,8 @@ const loginIn = async (req, res) => {
       .json({
         message: "sign in successful",
         user: {
-          username: existingUser.username,
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
           email: existingUser.email,
         },
       });

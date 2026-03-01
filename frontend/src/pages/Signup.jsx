@@ -35,6 +35,47 @@ const SignUp = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setError("");
   };
+
+  const validate = () => {
+    let newError = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: "",
+      subject: "",
+    };
+    if (!formData.firstName.trim())
+      newError.firstName = "First name is required";
+    if (!formData.lastName.trim()) newError.lastName = "Last name is required";
+
+    const emailCond = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newError.email = "Email is required";
+    } else if (!emailCond.test(formData.email)) {
+      newError.email = "Please enter a valid email (email@domain.com)";
+    }
+    const passwordCond = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,20}$/;
+    if (!formData.password.trim()) {
+      newError.password = "Password is required";
+    } else if (!passwordCond.test(formData.password)) {
+      newError.password = "Enter a valid password (e.g. Password2)";
+    }
+
+    if (!formData.confirmPassword.trim()) {
+      newError.confirmPassword = "Please confirm your password";
+    } else if (formData.password !== formData.confirmPassword) {
+      newError.confirmPassword = "Passwords do not match";
+    }
+
+    if (!formData.role) newError.role = "Please select your role";
+    if (formData.role === "teacher" && !formData.subject)
+      newError.subject = "Please select a subject";
+    setError(newError);
+    return Object.values(newError).every((e) => e === "");
+  };
+
   //role change
   const handleRoleSelect = (role) => {
     setFormData((prev) => ({ ...prev, role, subject: "" }));
@@ -43,35 +84,17 @@ const SignUp = () => {
   //handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    //basic validation
-    if (!formData.firstName.trim() || !formData.lastName.trim()) {
-      setError("firstname & lastname is required");
-      return;
-    }
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-    if (!formData.role) {
-      setError("Please select your role");
-      return;
-    }
-    if (formData.role === "teacher" && !formData.subject) {
-      setError("Please select a subject");
-      return;
-    }
+    if (!validate()) return;
     setLoading(true);
     try {
       console.log("signup data:", formData);
       alert("account created");
       navigate("/dashboard");
     } catch (error) {
-      setError(error.response?.data?.msg || "something went wrong");
+      setError((prev) => ({
+        ...prev,
+        email: error.response?.data?.msg || "something",
+      }));
     } finally {
       setLoading(false);
     }
@@ -144,10 +167,10 @@ const SignUp = () => {
                   placeholder="pat@gmail.com "
                   className="focus:outline-none   flex-1"
                 ></input>
-                {error.email && (
-                  <p className="text-red-500 text-sm mt-1">{error.email}</p>
-                )}
               </div>
+              {error.email && (
+                <p className="text-red-500 text-sm mt-1">{error.email}</p>
+              )}
             </div>
             {/**password */}
             <div>
@@ -162,11 +185,12 @@ const SignUp = () => {
                   placeholder="*******"
                   className="flex-1 "
                 ></input>
-                {error.password && (
-                  <p className="text-red-500 text-sm mt-1">{error.password}</p>
-                )}
+
                 <IoEyeOutline />
               </div>
+              {error.password && (
+                <p className="text-red-500 text-sm mt-1">{error.password}</p>
+              )}
             </div>
             {/**confirm */}
             <div>
@@ -181,13 +205,14 @@ const SignUp = () => {
                   placeholder="*******"
                   className="flex-1 "
                 ></input>
-                {error.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {error.confirmPassword}
-                  </p>
-                )}
+
                 <IoEyeOutline />
               </div>
+              {error.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {error.confirmPassword}
+                </p>
+              )}
             </div>
             {/**role */}
             <div className="flex gap-4 ">
@@ -222,6 +247,9 @@ const SignUp = () => {
                     Teacher
                   </button>
                 </div>
+                {error.role && (
+                  <p className="text-red-500 text-sm mt-1">{error.role}</p>
+                )}
               </div>
             </div>
             {/**subject role */}
@@ -240,6 +268,9 @@ const SignUp = () => {
                   <option value="english">English Language</option>
                   <option value="social studies">Social Studies</option>
                 </select>
+                {error.subject && (
+                  <p className="text-red-500 text-sm mt-1">{error.subject}</p>
+                )}
               </div>
             )}
             {/**create my account button */}

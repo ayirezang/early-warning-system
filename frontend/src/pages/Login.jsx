@@ -132,7 +132,7 @@ const Login = () => {
             <p className="text-center">
               Don't have an account yet?{" "}
               <span className="text-blue-500">
-                <Link to="/signup">Signup</Link>
+                <Link to="/">Signup</Link>
               </span>
             </p>
           </form>
@@ -143,4 +143,3 @@ const Login = () => {
 };
 
 export default Login;
-
