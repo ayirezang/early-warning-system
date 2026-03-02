@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { FiShield } from "react-icons/fi";
 import { CiLogin } from "react-icons/ci";
 
+import { AuthContext } from "../context/AuthContext";
+
 const Header = () => {
+  const { firstName, lastName, subject } = useContext(AuthContext);
   return (
     <div>
       <header
@@ -20,10 +23,10 @@ const Header = () => {
               </Link>
               {/**erly warning  */}
               <div>
-                <h1 className="text-xl font-bold text-gray-800">
+                <h1 className="text-xl font-bold text-gray-900">
                   Early warning system
                 </h1>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-gray-500">
                   Student Performance monitoring{" "}
                 </p>
               </div>
@@ -31,8 +34,13 @@ const Header = () => {
             {/**name and subject */}
             <div className="flex items-center gap-4">
               <div className="">
-                <p className="text-black text-lg">Ms.Pat Ayirezang</p>
-                <p className="text-xs">Mathematics Teacher</p>
+                <p className="text-black text-lg">
+                  {" "}
+                  {firstName}
+                  {lastName}
+                </p>
+
+                <p className="text-xs">{subject} Teacher</p>
               </div>
               <Link to="/">
                 <button className="p-2 hover:bg-gray-100 rounded-lg ">

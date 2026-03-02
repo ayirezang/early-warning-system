@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { MdOutlineSchool } from "react-icons/md";
@@ -8,6 +8,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { IoSchoolOutline } from "react-icons/io5";
 import { signUpApi } from "../api/api";
+import { AuthContext } from "../context/AuthContext";
 const SignUp = () => {
   const navigate = useNavigate();
   const [error, setError] = useState({
@@ -30,6 +31,7 @@ const SignUp = () => {
     role: "",
     subject: "",
   });
+  const { setFirstName, setLastName, setSubject } = useContext(AuthContext);
   //handlechange
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,7 +91,10 @@ const SignUp = () => {
     setLoading(true);
     try {
       console.log("signup data:", formData);
-      await signUpApi(formData);
+      const data = await signUpApi(formData);
+      setFirstName(data.user.firstName);
+      setLastName(data.user.lastName);
+      setSubject(data.user.Subject);
       alert("account created");
       navigate("/dashboard");
     } catch (error) {

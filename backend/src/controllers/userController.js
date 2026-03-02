@@ -70,6 +70,7 @@ const signUp = async (req, res) => {
           lastName: savedUser.lastName,
           email: savedUser.email,
           role: savedUser.role,
+          subject: savedUser.subject,
         },
       });
   } catch (error) {
@@ -117,10 +118,11 @@ const login = async (req, res) => {
       .json({
         message: "sign in successful",
         user: {
-          // firstName: existingUser.firstName,
-          // lastName: existingUser.lastName,
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
           email: existingUser.email,
-          password: existingUser.password,
+          role: existing.role,
+          subject: existing.subject,
         },
       });
   } catch (error) {
