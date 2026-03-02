@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineSchool } from "react-icons/md";
 import { MdOutlineEmail } from "react-icons/md";
 import { TbLockPassword } from "react-icons/tb";
 import { IoEyeOutline } from "react-icons/io5";
 import { loginApi } from "../api/api";
+import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,6 +13,14 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const {
+    firstName,
+    lastName,
+    subject,
+    setFirstName,
+    setLastName,
+    setSubject,
+  } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({
