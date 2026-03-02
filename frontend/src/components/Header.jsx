@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FiShield } from "react-icons/fi";
 import { CiLogin } from "react-icons/ci";
 
@@ -12,9 +13,11 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-4  sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3 ">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <FiShield className="w-8 h-8 text-white" />
-              </div>
+              <Link to="/">
+                <div className="bg-blue-600 p-2 rounded-lg">
+                  <FiShield className="w-8 h-8 text-white" />
+                </div>
+              </Link>
               {/**erly warning  */}
               <div>
                 <h1 className="text-xl font-bold text-gray-800">
@@ -31,9 +34,11 @@ const Header = () => {
                 <p className="text-black text-lg">Ms.Pat Ayirezang</p>
                 <p className="text-xs">Mathematics Teacher</p>
               </div>
-              <button className="p-2 hover:bg-gray-100 rounded-lg ">
-                <CiLogin className="w-8 h-8 text-gray-500" />
-              </button>
+              <Link to="/">
+                <button className="p-2 hover:bg-gray-100 rounded-lg ">
+                  <CiLogin className="w-8 h-8 text-gray-500" />
+                </button>
+              </Link>
             </div>
           </div>
         </div>

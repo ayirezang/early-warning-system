@@ -1,11 +1,11 @@
-const User = require("../models/userModel");
-const Student = require("../models/student");
-const SubjectScore = require("../models/subjectScoreModel");
+import User from "../models/userModel.js";
+import Student from "../models/student.js";
+import SubjectScore from "../models/subjectScoreModel.js";
 // const subjectAI = require("../ml/subjectAI");
 
 // 1. ENTER SCORE (AI predicts automatically)
 
-exports.enterScore = async (req, res) => {
+export const enterScore = async (req, res) => {
   try {
     const {
       teacherId,
@@ -106,7 +106,7 @@ exports.enterScore = async (req, res) => {
 
 // 2. GET MY STUDENTS
 
-exports.getMyStudents = async (req, res) => {
+export const getMyStudents = async (req, res) => {
   try {
     const { teacherId, academicYear, semester } = req.query;
 
@@ -175,7 +175,7 @@ exports.getMyStudents = async (req, res) => {
 };
 
 // 3. GET AT-RISK STUDENTS
-exports.getAtRiskStudents = async (req, res) => {
+export const getAtRiskStudents = async (req, res) => {
   try {
     const { teacherId, academicYear, semester } = req.query;
 
@@ -238,7 +238,7 @@ exports.getAtRiskStudents = async (req, res) => {
 
 // 4. GET ALL STUDENTS (for dropdown)
 
-exports.getAllStudents = async (req, res) => {
+export const getAllStudents = async (req, res) => {
   try {
     const students = await Student.find({ isActive: true })
       .select(

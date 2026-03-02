@@ -1,8 +1,10 @@
-const userModel = require("../models/userModel");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-const { validationResult } = require("express-validator");
+import userModel from "../models/userModel.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import { validationResult } from "express-validator";
+
+dotenv.config();
 
 // //signup
 const signUp = async (req, res) => {
@@ -26,7 +28,7 @@ const signUp = async (req, res) => {
         .status(400)
         .json({ sucess: false, error: "all fields are required" });
     }
-    if (role === "teacher" && !subject) {
+    if (role === "TEACHER" && !subject) {
       return res
         .status(400)
         .json({ success: false, error: "subject is requred for teachers" });
@@ -44,7 +46,7 @@ const signUp = async (req, res) => {
       email,
       password,
       role,
-      subject: role === "teacher" ? subject : undefined,
+      subject: role === "TEACHER" ? subject : undefined,
     });
     const savedUser = await newUser.save();
 
@@ -80,7 +82,7 @@ const signUp = async (req, res) => {
 };
 //login
 
-const loginIn = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -115,9 +117,10 @@ const loginIn = async (req, res) => {
       .json({
         message: "sign in successful",
         user: {
-          firstName: existingUser.firstName,
-          lastName: existingUser.lastName,
+          // firstName: existingUser.firstName,
+          // lastName: existingUser.lastName,
           email: existingUser.email,
+          password: existingUser.password,
         },
       });
   } catch (error) {
@@ -144,4 +147,4 @@ const logOut = async (req, res) => {
     });
   }
 };
-module.exports = { signUp, loginIn, logOut };
+export { signUp, login, logOut };

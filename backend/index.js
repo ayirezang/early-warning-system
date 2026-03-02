@@ -1,11 +1,20 @@
-const express = require("express");
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 const app = express();
-require("dotenv").config();
-const mongoose = require("mongoose");
+dotenv.config();
+import mongoose from "mongoose";
 //import routes
-const riskRoutes = require("./src/routes/riskRoutes");
-const userRoutes = require("./src/routes/userRoutes");
+import riskRoutes from "./src/routes/riskRoutes.js";
+import userRoutes from "./src/routes/userRoutes.js";
 //middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
 //use routes
 app.use("/api", riskRoutes);

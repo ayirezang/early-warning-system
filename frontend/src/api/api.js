@@ -11,36 +11,36 @@ const api = axios.create({
 
 //signup
 
-export const signUpApi = async (firstName, lastName, email, password, role) => {
+export const signUpApi = async (formData) => {
   try {
     const response = await api.post("/signup", {
-      firstName,
-      lastName,
-      email,
-      password,
-      role,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+      subject: formData.subject,
     });
     Cookie.set("token", response.data.token, { expires: 5 });
     return response.data;
   } catch (error) {
     console.error("sign up error:", error);
-    console.error("error response:", error.response);
-    throw new Error(error.response?.data?.message || "sign up failed");
+    throw error;
   }
 };
 //login
-export const loginApi = async (email, password) => {
+export const loginApi = async (formData) => {
   try {
     const response = await api.post("/login", {
-      email,
-      password,
+      email: formData.email,
+      password: formData.password,
     });
     Cookie.set("token", response.data.token, { expires: 5 });
     return response.data;
   } catch (error) {
     console.error("login error: ", error);
-    console.error("error response:", error.response);
-    throw new Error(error.response?.data?.message || "login failed");
+
+    throw error;
   }
 };
 //sign out

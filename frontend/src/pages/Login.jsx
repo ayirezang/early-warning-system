@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineSchool } from "react-icons/md";
 import { MdOutlineEmail } from "react-icons/md";
 import { TbLockPassword } from "react-icons/tb";
 import { IoEyeOutline } from "react-icons/io5";
+import { loginApi } from "../api/api";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -50,12 +52,14 @@ const Login = () => {
     setLoading(true);
     try {
       console.log("login data:", formData);
+      await loginApi(formData);
       alert("Logged in!");
-    } catch (err) {
-      setError({
-        email: "",
-        password: err.response?.data?.msg || "Something went wrong",
-      });
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("full error:", error.response?.data);
+      alert(
+        "sign up failed:" + (error.response?.data.message || error.message),
+      );
     } finally {
       setLoading(false);
     }

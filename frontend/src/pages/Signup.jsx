@@ -7,6 +7,7 @@ import { TbLockPassword } from "react-icons/tb";
 import { IoEyeOutline } from "react-icons/io5";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { IoSchoolOutline } from "react-icons/io5";
+import { signUpApi } from "../api/api";
 const SignUp = () => {
   const navigate = useNavigate();
   const [error, setError] = useState({
@@ -88,13 +89,19 @@ const SignUp = () => {
     setLoading(true);
     try {
       console.log("signup data:", formData);
+      await signUpApi(formData);
       alert("account created");
       navigate("/dashboard");
     } catch (error) {
-      setError((prev) => ({
-        ...prev,
-        email: error.response?.data?.msg || "something",
-      }));
+      console.error("full error:", error.response?.data);
+      alert(
+        "sign up failed:" + (error.response?.data.message || error.message),
+      );
+      console.error;
+      // setError((prev) => ({
+      //   ...prev,
+      //   email: error.response?.data?.msg || "something",
+      // }));
     } finally {
       setLoading(false);
     }
@@ -222,10 +229,10 @@ const SignUp = () => {
                   {/* Admin Button */}
                   <button
                     type="button"
-                    onClick={() => handleRoleSelect("admin")}
+                    onClick={() => handleRoleSelect("ADMIN")}
                     className={`flex-1 flex gap-2 items-center justify-center border rounded-lg px-4 py-2 
             ${
-              formData.role === "admin"
+              formData.role === "ADMIN"
                 ? "bg-blue-600 text-white border-blue-600" // selected style
                 : "border-gray-400 text-gray-600" // unselected style
             }`}
@@ -235,10 +242,10 @@ const SignUp = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleRoleSelect("teacher")}
+                    onClick={() => handleRoleSelect("TEACHER")}
                     className={`flex-1 flex gap-2 items-center justify-center border rounded-lg px-4 py-2 
             ${
-              formData.role === "teacher"
+              formData.role === "TEACHER"
                 ? "bg-blue-600 text-white border-blue-600" // selected style
                 : "border-gray-400 text-gray-600" // unselected style
             }`}
@@ -253,7 +260,7 @@ const SignUp = () => {
               </div>
             </div>
             {/**subject role */}
-            {formData.role === "teacher" && (
+            {formData.role === "TEACHER" && (
               <div>
                 <label className="text-sm block mb-1 ">Subject</label>
                 <select
@@ -263,10 +270,10 @@ const SignUp = () => {
                   className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:border-blue-300 text-gray-500"
                 >
                   <option value="">select subject</option>
-                  <option value="maths">Mathematics</option>
-                  <option value="science">Integrated Science</option>
-                  <option value="english">English Language</option>
-                  <option value="social studies">Social Studies</option>
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Science">Integrated Science</option>
+                  <option value="English">English Language</option>
+                  <option value="Social Studies">Social Studies</option>
                 </select>
                 {error.subject && (
                   <p className="text-red-500 text-sm mt-1">{error.subject}</p>
