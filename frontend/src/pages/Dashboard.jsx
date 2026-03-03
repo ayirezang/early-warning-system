@@ -3,6 +3,8 @@ import Header from "../components/Header";
 import StatCard from "../components/StatCard";
 import { FiUsers, FiCheckCircle, FiAlertTriangle } from "react-icons/fi";
 import { PiWarningCircleLight } from "react-icons/pi";
+import { MdOutlineTrendingUp } from "react-icons/md";
+
 import { GoPlus } from "react-icons/go";
 import Buttons from "../components/Buttons";
 import ScoreModal from "../components/ScoreModal";
@@ -12,7 +14,7 @@ const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const stats = {
     totalStudents: 50,
-    scoresEntered: 35,
+    classAverage: 74.5,
     atRisk: 8,
   };
   return (
@@ -34,8 +36,8 @@ const Dashboard = () => {
             icon={<FiUsers size={20} />}
           />
           <StatCard
-            label="scores Entered"
-            value={stats.scoresEntered}
+            label="class Average"
+            value={stats.classAverage}
             color="green"
             icon={<FiCheckCircle size={20} />}
           />
@@ -44,6 +46,12 @@ const Dashboard = () => {
             value={stats.atRisk}
             color="red"
             icon={<FiAlertTriangle size={20} />}
+          />
+          <StatCard
+            label="At-Risk"
+            value={stats.atRisk}
+            color="red"
+            icon={<MdOutlineTrendingUp size={20} />}
           />
         </div>
         <div className="flex gap-4 mb-8">

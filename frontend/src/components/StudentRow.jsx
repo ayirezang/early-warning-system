@@ -7,7 +7,7 @@ const statusConfig = {
 
 const StudentRow = ({ student }) => {
   return (
-    <tr className="border-b border-gray-100 hover:bg-gray-50 transition">
+    <tr className="border-b border-gray-200 hover:bg-gray-50 transition">
       {/* Name */}
       <td className="px-6 py-4 font-semibold text-gray-900">{student.name}</td>
 
