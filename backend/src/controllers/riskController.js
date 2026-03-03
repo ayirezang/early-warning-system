@@ -41,7 +41,11 @@ export const enterScore = async (req, res) => {
         error: "Student not found",
       });
     }
-
+    const totalScore = sbaScore * 0.3 + examScore * 0.7;
+    const aiPrediction = {
+      willFailSubject: totalScore < 50,
+      riskCategory: totalScore >= 50 ? "LOW" : "HIGH",
+    };
     // USE AI TO PREDICT RISK
     // const aiPrediction = subjectAI.predictSubjectRisk(
     //   student.attendance,

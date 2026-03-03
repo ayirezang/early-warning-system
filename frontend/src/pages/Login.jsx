@@ -13,7 +13,8 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const { setFirstName, setLastName, setSubject } = useContext(AuthContext);
+  const { setFirstName, setLastName, setSubject, setTeacherId } =
+    useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({
@@ -57,7 +58,8 @@ const Login = () => {
       const data = await loginApi(formData);
       setFirstName(data.user.firstName);
       setLastName(data.user.lastName);
-      setSubject(data.user.lastName);
+      setSubject(data.user.subject);
+      setTeacherId(data.user._id);
 
       alert("Logged in!");
       navigate("/dashboard");

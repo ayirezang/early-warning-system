@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const subjectScoreSchema = new Schema(
@@ -28,7 +28,7 @@ const subjectScoreSchema = new Schema(
     subject: {
       type: String,
       required: true,
-      enum: ["English", "Science", "Mathematics ", "Social Studies"],
+      enum: ["English", "Science", "Mathematics", "Social Studies"],
     },
     sbaScore: {
       type: Number,
@@ -48,16 +48,16 @@ const subjectScoreSchema = new Schema(
         required: true,
       },
 
-      riskPercent: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 100,
-      },
+      // riskPercent: {
+      //   type: Number,
+      //   required: true,
+      //   min: 0,
+      //   max: 100,
+      // },
       riskCategory: {
         type: String,
         required: true,
-        enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+        enum: ["LOW", "HIGH"],
       },
     },
     enteredBy: {
@@ -80,4 +80,5 @@ subjectScoreSchema.index(
 subjectScoreSchema.index({ teacherId: 1, academicYear: 1, semester: 1 });
 
 const SubjectScore = mongoose.model("SubjectScore", subjectScoreSchema);
-module.exports = SubjectScore;
+
+export default SubjectScore;

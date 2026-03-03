@@ -31,7 +31,8 @@ const SignUp = () => {
     role: "",
     subject: "",
   });
-  const { setFirstName, setLastName, setSubject } = useContext(AuthContext);
+  const { setFirstName, setLastName, setSubject, setTeacherId } =
+    useContext(AuthContext);
   //handlechange
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,6 +96,7 @@ const SignUp = () => {
       setFirstName(data.user.firstName);
       setLastName(data.user.lastName);
       setSubject(data.user.Subject);
+      setTeacherId(data.user._id);
       alert("account created");
       navigate("/dashboard");
     } catch (error) {
@@ -276,7 +278,7 @@ const SignUp = () => {
                 >
                   <option value="">select subject</option>
                   <option value="Mathematics">Mathematics</option>
-                  <option value="Science">Integrated Science</option>
+                  <option value="Science">Science</option>
                   <option value="English">English Language</option>
                   <option value="Social Studies">Social Studies</option>
                 </select>

@@ -1,34 +1,69 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
+import { AuthContext } from "../context/AuthContext";
+import { enterScoreApi, getAllStudentsApi } from "../api/api";
 
 const ScoreModal = ({ onClose }) => {
-  const students = [
-    {
-      id: "S-001",
-      name: "Patience Ayirezang",
-    },
-    {
-      id: "S-002",
-      name: "Patience Ayirezang",
-    },
-    {
-      id: "S-001",
-      name: "Patience Ayirezang",
-    },
-    {
-      id: "S-001",
-      name: "Patience Ayirezang",
-    },
-    {
-      id: "S-001",
-      name: "Patience Ayirezang",
-    },
-    {
-      id: "S-001",
-      name: "Patience Ayirezang",
-    },
-  ];
-  const academicYear = ["Year 1", "Year 2", "Year 3"];
+  const { teacherId } = useContext(AuthContext);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  //form state
+  const [formData, setFormData] = useState({
+    studentId: "",
+    academicYear: "",
+    semester: "",
+    sbaScore: "",
+    examScore: "",
+  });
+  //fetch students
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const data = await getAllStudentsApi();
+        setStudents(data.students);
+      } catch (error) {
+        console.error("failed to fetch students:", error);
+        console.log();
+      }
+    };
+    fetchStudents();
+  }, []);
+  //academic year
+
+  //handlechange
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  //handlesubmit
+  const handleSubmit = async () => {
+    console.log("teacherId:", teacherId);
+    console.log("formData:", formData);
+    setLoading(true);
+    try {
+      const data = await enterScoreApi({
+        teacherId,
+        studentId: formData.studentId,
+        academicYear: formData.academicYear,
+        semester: formData.semester,
+        sbaScore: Number(formData.sbaScore),
+        examScore: Number(formData.examScore),
+      });
+      const risk = data.data.aiPrediction.riskCategory;
+      alert(`Student is ${risk === "LOW" ? " On Track" : " At Risk"}`);
+      onClose();
+    } catch (error) {
+      alert(
+        "failed to enter score :" + error.response?.data?.error ||
+          error.message,
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const academicYear = ["1", "2", "3"];
   return (
     <div
       className="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
@@ -61,11 +96,16 @@ const ScoreModal = ({ onClose }) => {
                 <label className="text-sm font-medium text-gray-700 ">
                   Student Name *
                 </label>
-                <select className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2">
+                <select
+                  name="studentId"
+                  value={formData.studentId}
+                  onChange={handleChange}
+                  className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2"
+                >
                   <option value="">Select a student...</option>
                   {students.map((student) => (
-                    <option key={student.id} value={student.id}>
-                      {student.name}
+                    <option key={student._id} value={student._id}>
+                      {student.firstName} {student.lastName}
                     </option>
                   ))}
                 </select>
@@ -75,10 +115,15 @@ const ScoreModal = ({ onClose }) => {
                 <label className="text-sm font-medium text-gray-700">
                   Academic Year *
                 </label>
-                <select className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2">
+                <select
+                  name="academicYear"
+                  value={formData.academicYear}
+                  onChange={handleChange}
+                  className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2"
+                >
                   <option value="">Select year...</option>
                   {academicYear.map((year) => (
-                    <option key={year.id} value={year.id}>
+                    <option key={year} value={year}>
                       {year}
                     </option>
                   ))}
@@ -92,10 +137,15 @@ const ScoreModal = ({ onClose }) => {
                 <label className="text-sm font-medium text-gray-700 ">
                   Semester *
                 </label>
-                <select className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2">
+                <select
+                  name="semester"
+                  value={formData.semester}
+                  onChange={handleChange}
+                  className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2"
+                >
                   <option value="">Select semester...</option>
-                  <option value="">Semester 1</option>
-                  <option value="">Semester 2</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
                 </select>
               </div>
 
@@ -105,6 +155,9 @@ const ScoreModal = ({ onClose }) => {
                   SBA Score (0-100) *
                 </label>
                 <input
+                  name="sbaScore"
+                  value={formData.sbaScore}
+                  onChange={handleChange}
                   type="number"
                   min="0"
                   max="100"
@@ -120,6 +173,9 @@ const ScoreModal = ({ onClose }) => {
                   Exam Score(0-100)
                 </label>
                 <input
+                  name="examScore"
+                  value={formData.examScore}
+                  onChange={handleChange}
                   type="number"
                   min="0"
                   max="100"
@@ -128,7 +184,7 @@ const ScoreModal = ({ onClose }) => {
                 ></input>
               </div>
               {/**attendance */}
-              <div className="flex flex-col gap-2">
+              {/* <div className="flex flex-col gap-2">
                 <label className="text-md  text-gray-700 font-semibold mt-2 ">
                   Attendance(0-100)
                 </label>
@@ -139,15 +195,24 @@ const ScoreModal = ({ onClose }) => {
                   placeholder="Enter attendance"
                   className="border border-gray-300 rounded-lg  px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 ></input>
-              </div>
+              </div> */}
             </div>
             {/** buttons*/}
             <div className="grid grid-cols-2 gap-4 mt-6">
-              <button className=" flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer">
+              <button
+                type="button"
+                onClick={onClose}
+                className=" flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer"
+              >
                 Cancel
               </button>
-              <button className=" flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98">
-                Get Prediction
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={loading}
+                className=" flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98"
+              >
+                {loading ? "Predicting.." : "Get  Prediction"}
               </button>
             </div>
           </form>

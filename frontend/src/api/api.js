@@ -55,3 +55,37 @@ export const logOutApi = async () => {
     throw new Error(error.response?.data?.message || "logout failed");
   }
 };
+// GET all students for dropdown
+export const getAllStudentsApi = async () => {
+  try {
+    const response = await api.get("/all-students");
+    return response.data;
+  } catch (error) {
+    console.error("get students error:", error);
+    throw error;
+  }
+};
+
+// ENTER SCORE
+export const enterScoreApi = async (scoreData) => {
+  try {
+    const response = await api.post("/enter", scoreData);
+    return response.data;
+  } catch (error) {
+    console.error("enter score error:", error);
+    throw error;
+  }
+};
+
+// GET MY STUDENTS for table
+export const getMyStudentsApi = async (teacherId, academicYear, semester) => {
+  try {
+    const response = await api.get("/students", {
+      params: { teacherId, academicYear, semester },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("get my students error:", error);
+    throw error;
+  }
+};

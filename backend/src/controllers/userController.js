@@ -66,6 +66,7 @@ const signUp = async (req, res) => {
       .json({
         message: "user created successfully",
         user: {
+          _id: savedUser._id,
           firstName: savedUser.firstName,
           lastName: savedUser.lastName,
           email: savedUser.email,
@@ -118,10 +119,11 @@ const login = async (req, res) => {
       .json({
         message: "sign in successful",
         user: {
+          _id: existingUser._id,
           firstName: existingUser.firstName,
           lastName: existingUser.lastName,
           email: existingUser.email,
-          role: existing.role,
+          role: existingUser.role,
           subject: existing.subject,
         },
       });

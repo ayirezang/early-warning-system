@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 const studentSchema = new Schema(
   {
@@ -38,14 +38,14 @@ const studentSchema = new Schema(
     },
     currentRiskCategory: {
       type: String,
-      enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+      enum: ["LOW", "HIGH", "UNKNOWN"],
       default: "UNKNOWN",
     },
     currentRiskPercent: {
       type: Number,
       default: 0,
       min: 0,
-      max: 0,
+      max: 100,
     },
     isActive: {
       type: Boolean,
@@ -57,4 +57,5 @@ const studentSchema = new Schema(
   },
 );
 const Student = mongoose.model("Student", studentSchema);
-module.exports = Student;
+
+export default Student;

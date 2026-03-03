@@ -5,6 +5,7 @@ export const AuthProvider = ({ children }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [subject, setSubject] = useState("");
+  const [teacherId, setTeacherId] = useState("");
   return (
     <AuthContext.Provider
       value={{
@@ -14,6 +15,8 @@ export const AuthProvider = ({ children }) => {
         setLastName,
         subject,
         setSubject,
+        teacherId,
+        setTeacherId,
       }}
     >
       {children}
