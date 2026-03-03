@@ -36,7 +36,11 @@ const StatCard = ({ label, value, icon, color = "blue" }) => {
         </strong>
       </div>
       {icon && (
-        <div className={`p-3 rounded-full ${styles.icon} text-2xl`}>{icon}</div>
+        <div
+          className={`px-5 py-1 rounded-lg ${styles.icon} text-4xl flex items-center`}
+        >
+          {icon}
+        </div>
       )}
     </div>
   );
