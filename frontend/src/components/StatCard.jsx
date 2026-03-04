@@ -25,12 +25,10 @@ const StatCard = ({ label, value, icon, color = "blue" }) => {
 
   return (
     <div
-      className={`flex justify-between p-5 rounded-xl border-l-4 ${styles.border} ${styles.bg} shadow-sm hover:shadow-md transition-shadow duration-200 flex-1 min-w-45 `}
+      className={`flex justify-between p-6 rounded-xl border-l-4 ${styles.border} ${styles.bg} shadow-sm hover:shadow-md transition-shadow duration-200 flex-1 min-w-45 `}
     >
       <div className="flex flex-col gap-1">
-        <span className="text-sm font-meduim  text-gray-500 tracking wide">
-          {label}
-        </span>
+        <span className="text-md font-meduim   tracking wide">{label}</span>
         <strong className={`text-4xl font-bold ${styles.value}`}>
           {value}
         </strong>

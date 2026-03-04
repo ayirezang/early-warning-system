@@ -12,6 +12,7 @@ import StudentTable from "../components/StudentTable";
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [refresh, setRefresh] = useState(0);
   const stats = {
     totalStudents: 50,
     classAverage: 74.5,
@@ -20,7 +21,7 @@ const Dashboard = () => {
   return (
     <div>
       <Header />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-8">
+      <main className="w-full  px-6 sm:px-6 lg:px-6 py-8">
         <div className="mb-8">
           <h1 className="font-black text-3xl text-gray-900 mb-2">Dashboard</h1>
           <p className="text-gray-600 text-lg">
@@ -28,31 +29,33 @@ const Dashboard = () => {
           </p>
         </div>
         {/**stats cards */}
-        <div className="flex gap-4 mb-8">
+        <div className="grid grid-cols-3 gap-4 mb-8 ">
           <StatCard
-            label="total students"
+            label="Total Students"
             value={stats.totalStudents}
             color="blue"
             icon={<FiUsers size={20} />}
           />
           <StatCard
-            label="class Average"
+            label="Class Average"
             value={stats.classAverage}
             color="green"
             icon={<FiCheckCircle size={20} />}
           />
           <StatCard
-            label="At-Risk"
+            label="
+                At-Risk
+                 Students"
             value={stats.atRisk}
             color="red"
             icon={<FiAlertTriangle size={20} />}
           />
-          <StatCard
+          {/* <StatCard
             label="At-Risk"
             value={stats.atRisk}
             color="red"
             icon={<MdOutlineTrendingUp size={20} />}
-          />
+          /> */}
         </div>
         <div className="flex gap-4 mb-8">
           <Buttons
@@ -68,9 +71,14 @@ const Dashboard = () => {
             onClick={() => setIsOpen(true)}
           />
         </div>
-        {isOpen && <ScoreModal onClose={() => setIsOpen(false)} />}
+        {isOpen && (
+          <ScoreModal
+            onClose={() => setIsOpen(false)}
+            onSuccess={() => setRefresh((prev) => prev + 1)}
+          />
+        )}
         <div>
-          <StudentTable />
+          <StudentTable refresh={refresh} />
         </div>
       </main>
     </div>

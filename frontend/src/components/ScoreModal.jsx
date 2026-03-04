@@ -3,7 +3,7 @@ import { RxCross1 } from "react-icons/rx";
 import { AuthContext } from "../context/AuthContext";
 import { enterScoreApi, getAllStudentsApi } from "../api/api";
 
-const ScoreModal = ({ onClose }) => {
+const ScoreModal = ({ onClose, onSuccess }) => {
   const { teacherId } = useContext(AuthContext);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,6 +40,15 @@ const ScoreModal = ({ onClose }) => {
   const handleSubmit = async () => {
     console.log("teacherId:", teacherId);
     console.log("formData:", formData);
+    console.log("sending:", {
+      teacherId,
+      studentId: formData.studentId,
+      academicYear: formData.academicYear,
+      semester: formData.semester,
+      sbaScore: Number(formData.sbaScore),
+      examScore: Number(formData.examScore),
+    });
+
     setLoading(true);
     try {
       const data = await enterScoreApi({
@@ -51,7 +60,8 @@ const ScoreModal = ({ onClose }) => {
         examScore: Number(formData.examScore),
       });
       const risk = data.data.aiPrediction.riskCategory;
-      alert(`Student is ${risk === "LOW" ? " On Track" : " At Risk"}`);
+      // alert(`Student is ${risk === "LOW" ? " On Track" : " At Risk"}`);
+      onSuccess();
       onClose();
     } catch (error) {
       alert(
@@ -70,10 +80,10 @@ const ScoreModal = ({ onClose }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl w-full max-w-4xl mx-4 p-0 overflow-hidden shadow-2xl"
+        className="bg-white rounded-xl w-full max-w-3xl mx-4 p-0 overflow-hidden shadow-2xl  max-h-[90vh] "
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="bg-blue-800 flex justify-between p-5 text-white rounded-xl">
+        <header className="bg-blue-600 flex justify-between p-5 text-white ">
           <div>
             <h1 className="font-bold text-2xl ">Enter Student Score</h1>
             <p className="text-blue-100 text-sm mt-1">
@@ -93,9 +103,7 @@ const ScoreModal = ({ onClose }) => {
             <div className="grid grid-cols-2 gap-4">
               {/**name */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700 ">
-                  Student Name *
-                </label>
+                <label className="text-md font-semibold">Student Name *</label>
                 <select
                   name="studentId"
                   value={formData.studentId}
@@ -112,7 +120,7 @@ const ScoreModal = ({ onClose }) => {
               </div>
               {/**academic */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-md font-semibold">
                   Academic Year *
                 </label>
                 <select
@@ -134,7 +142,7 @@ const ScoreModal = ({ onClose }) => {
             {/**semester */}
             <div className="grid grid-cols-2 gap-4 mt-5">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700 ">
+                <label className="text-md font-semibold  ">
                   Semester *
                 </label>
                 <select
@@ -151,7 +159,7 @@ const ScoreModal = ({ onClose }) => {
 
               {/**sba score */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700 ">
+                <label className="text-md font-semibold  ">
                   SBA Score (0-100) *
                 </label>
                 <input
@@ -169,7 +177,7 @@ const ScoreModal = ({ onClose }) => {
             {/**exam score */}
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
-                <label className="text-md  text-gray-700 font-semibold mt-2 ">
+                <label className="text-md  font-semibold mt-2 ">
                   Exam Score(0-100)
                 </label>
                 <input

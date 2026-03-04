@@ -13,8 +13,8 @@ const Header = () => {
         className=" border-b border-gray-200 shadow-md 
       "
       >
-        <div className="max-w-7xl mx-auto px-4  sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+        <div className=" w-full   px-4  sm:px-6 lg:px-8">
+          <div className="flex  justify-between h-16">
             <div className="flex items-center gap-3 ">
               <Link to="/">
                 <div className="bg-blue-600 p-2 rounded-lg">
@@ -34,17 +34,17 @@ const Header = () => {
             {/**name and subject */}
             <div className="flex items-center gap-4">
               <div className="">
-                <p className="text-black text-lg">
+                <p className=" text-gray-900 font-bold text-xl">
                   {" "}
                   {firstName}
                   {lastName}
                 </p>
 
-                <p className="text-xs">{subject} Teacher</p>
+                <p className="text-sm text-gray-500">{subject} Teacher</p>
               </div>
               <Link to="/">
                 <button className="p-2 hover:bg-gray-100 rounded-lg ">
-                  <CiLogin className="w-8 h-8 text-gray-500" />
+                  <CiLogin className="w-6 h-6 " />
                 </button>
               </Link>
             </div>

@@ -3,7 +3,7 @@ import StudentRow from "./StudentRow";
 import { getMyStudentsApi } from "../api/api";
 import { AuthContext } from "../context/AuthContext";
 
-const StudentTable = () => {
+const StudentTable = ({ refresh }) => {
   const { teacherId } = useContext(AuthContext);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,8 @@ const StudentTable = () => {
       }
     };
     if (teacherId) fetchStudents();
-  }, [teacherId]);
+    else setLoading(false);
+  }, [teacherId, refresh]);
   if (loading) return <p className="text-gray-500">Loading students...</p>;
 
   return (

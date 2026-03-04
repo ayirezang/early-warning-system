@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         firstName,
         setFirstName,
-        lastName,
+        lastName,                                       
         setLastName,
         subject,
         setSubject,

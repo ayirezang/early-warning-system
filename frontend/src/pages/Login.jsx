@@ -56,12 +56,14 @@ const Login = () => {
     try {
       console.log("login data:", formData);
       const data = await loginApi(formData);
+      console.log("login response:", data);
       setFirstName(data.user.firstName);
       setLastName(data.user.lastName);
       setSubject(data.user.subject);
       setTeacherId(data.user._id);
+      setTeacherId(data.user._id);
 
-      alert("Logged in!");
+      // alert("Logged in!");
       navigate("/dashboard");
     } catch (error) {
       console.error("full error:", error.response?.data);
@@ -75,17 +77,17 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="p-2 md:p-4 lg:p-4 border-b border-gray-300">
-        <h2 className="text-center">Login</h2>
-      </header>
+      {/* <header className="p-2 md:p-4 lg:p-4 border-b border-gray-300">
+        <h2 className="text-center">EWS Portal</h2>
+      </header> */}
       <main className="flex flex-1 items-center justify-center p-4 md:p-6">
         <div className="w-full max-w-lg p-4 md:p-6 lg:p-8">
           <div className="flex flex-col items-center mb-6">
-            <div className="p-3 rounded-xl">
-              <MdOutlineSchool size={32} />
+            <div className="p-3  bg-blue-100 rounded-full mb-2 cursor-pointer">
+              <MdOutlineSchool size={32} className="text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold">Welcome back</h2>
-            <p className="text-sm text-center mt-1">
+            <h2 className="text-3xl font-bold">Welcome back</h2>
+            <p className="text-md text-center mt-1">
               Early Warning System Login
             </p>
           </div>
@@ -93,8 +95,8 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <div>
-              <label className="text-sm block mb-1">Email</label>
-              <div className="flex gap-2 items-center border border-gray-400 rounded-lg px-4 py-2">
+              <label className="text-md block mb-1">Email</label>
+              <div className="flex gap-2 items-center border border-gray-400 rounded-xl px-4 py-2 focus-within:border-blue-500">
                 <MdOutlineEmail />
                 <input
                   type="email"
@@ -112,8 +114,8 @@ const Login = () => {
 
             {/* Password */}
             <div>
-              <label className="text-sm block mb-1">Password</label>
-              <div className="flex gap-2 items-center border border-gray-400 rounded-lg px-4 py-2">
+              <label className="text-md block mb-1">Password</label>
+              <div className="flex gap-2 items-center border border-gray-400 rounded-xl px-4 py-2 focus:ring-2 focus-within:border-blue-500">
                 <TbLockPassword />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -136,7 +138,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 rounded-lg bg-blue-600 text-white cursor-pointer"
+              className="w-full px-4 py-2 rounded-xl bg-blue-600 text-white cursor-pointer mt-2"
             >
               {loading ? "Logging in..." : "Login to Dashboard"}
             </button>

@@ -124,7 +124,7 @@ const login = async (req, res) => {
           lastName: existingUser.lastName,
           email: existingUser.email,
           role: existingUser.role,
-          subject: existing.subject,
+          subject: existingUser.subject,
         },
       });
   } catch (error) {
