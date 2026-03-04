@@ -1,56 +1,28 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import StudentRow from "./StudentRow";
-
-const students = [
-  {
-    id: "S-001",
-    name: "Emma Wilson",
-    sba: 75,
-    exam: 80,
-    status: "On Track",
-    hasScore: true,
-    isAbsent: false,
-  },
-  {
-    id: "S-002",
-    name: "James Chen",
-    sba: 40,
-    exam: 35,
-    status: "At Risk",
-    hasScore: true,
-    isAbsent: false,
-  },
-  {
-    id: "S-003",
-    name: "Sophia Rodriguez",
-    sba: 85,
-    exam: 90,
-    status: "On Track",
-    hasScore: true,
-    isAbsent: false,
-  },
-  {
-    id: "S-004",
-    name: "Marcus Johnson",
-    sba: 0,
-    exam: 0,
-    status: "At Risk",
-    hasScore: true,
-    isAbsent: true,
-  },
-  {
-    id: "S-005",
-    name: "Olivia Smith",
-    sba: 60,
-    exam: 55,
-    status: "At Risk",
-    hasScore: true,
-    isAbsent: false,
-  },
-  { id: "S-006", name: "Aiden Brown", hasScore: false, isAbsent: false },
-];
+import { getMyStudentsApi } from "../api/api";
+import { AuthContext } from "../context/AuthContext";
 
 const StudentTable = () => {
+  const { teacherId } = useContext(AuthContext);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const data = await getMyStudentsApi(teacherId, "1", "1");
+        setStudents(data.students);
+      } catch (error) {
+        console.error("failed to fetch students:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (teacherId) fetchStudents();
+  }, [teacherId]);
+  if (loading) return <p className="text-gray-500">Loading students...</p>;
+
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
       <table className="w-full">
