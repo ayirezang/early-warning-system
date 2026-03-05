@@ -35,9 +35,7 @@ const Header = () => {
             <div className="flex items-center gap-4">
               <div className="">
                 <p className=" text-gray-900 font-bold text-xl">
-                  {" "}
-                  {firstName}
-                  {lastName}
+                  {firstName} {lastName}
                 </p>
 
                 <p className="text-sm text-gray-500">{subject} Teacher</p>
