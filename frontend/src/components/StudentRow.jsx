@@ -14,31 +14,35 @@ const StudentRow = ({ student }) => {
   };
 
   return (
-    <tr className="border-b border-gray-100 hover:bg-gray-50 transition">
-      <td className="px-6 py-4 font-semibold text-gray-900">{student.name}</td>
-      <td className="px-6 py-4 text-gray-500">{student.studentId}</td>
-      <td className="px-6 py-4">
+    <tr className="hover:bg-gray-50 transition-colors duration-150">
+      <td className="px-4 sm:px-6 py-3 sm:py-4 font-semibold text-sm text-gray-900 whitespace-nowrap">
+        {student.name}
+      </td>
+      <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-500 whitespace-nowrap">
+        {student.studentId}
+      </td>
+      <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-700">
         {student.hasScore ? (
           student.score.sba
         ) : (
-          <span className="text-gray-400">-</span>
+          <span className="text-gray-400">—</span>
         )}
       </td>
-      <td className="px-6 py-4">
+      <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-700">
         {student.hasScore ? (
           student.score.exam
         ) : (
-          <span className="text-gray-400">-</span>
+          <span className="text-gray-400">—</span>
         )}
       </td>
-      <td className="px-6 py-4">
+      <td className="px-4 sm:px-6 py-3 sm:py-4">
         {!student.hasScore ? (
-          <span className="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-xs font-medium">
+          <span className="bg-gray-100 text-gray-500 px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap">
             Pending
           </span>
         ) : (
           <span
-            className={`px-3 py-1 rounded-full text-xs font-medium ${statusStyle[status]}`}
+            className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${statusStyle[status]}`}
           >
             {status}
           </span>

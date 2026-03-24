@@ -8,7 +8,6 @@ const ScoreModal = ({ onClose, onSuccess }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  //form state
   const [formData, setFormData] = useState({
     studentId: "",
     academicYear: "",
@@ -16,7 +15,7 @@ const ScoreModal = ({ onClose, onSuccess }) => {
     sbaScore: "",
     examScore: "",
   });
-  //fetch students
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -24,31 +23,17 @@ const ScoreModal = ({ onClose, onSuccess }) => {
         setStudents(data.students);
       } catch (error) {
         console.error("failed to fetch students:", error);
-        console.log();
       }
     };
     fetchStudents();
   }, []);
-  //academic year
 
-  //handlechange
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  //handlesubmit
-  const handleSubmit = async () => {
-    console.log("teacherId:", teacherId);
-    console.log("formData:", formData);
-    console.log("sending:", {
-      teacherId,
-      studentId: formData.studentId,
-      academicYear: formData.academicYear,
-      semester: formData.semester,
-      sbaScore: Number(formData.sbaScore),
-      examScore: Number(formData.examScore),
-    });
 
+  const handleSubmit = async () => {
     setLoading(true);
     try {
       const data = await enterScoreApi({
@@ -60,13 +45,13 @@ const ScoreModal = ({ onClose, onSuccess }) => {
         examScore: Number(formData.examScore),
       });
       const risk = data.data.aiPrediction.riskCategory;
-      // alert(`Student is ${risk === "LOW" ? " On Track" : " At Risk"}`);
+      alert(`Student is ${risk === "LOW" ? "On Track" : "At Risk"}`);
       onSuccess();
       onClose();
     } catch (error) {
       alert(
-        "failed to enter score :" + error.response?.data?.error ||
-          error.message,
+        "Failed to enter score: " +
+          (error.response?.data?.error || error.message),
       );
     } finally {
       setLoading(false);
@@ -74,41 +59,50 @@ const ScoreModal = ({ onClose, onSuccess }) => {
   };
 
   const academicYear = ["1", "2", "3"];
+
+  const inputClass =
+    "border border-gray-300 rounded-lg w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500";
+  const labelClass = "text-sm sm:text-md font-semibold text-gray-700";
+
   return (
     <div
-      className="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/30 flex items-end sm:items-center justify-center z-50"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl w-full max-w-3xl mx-4 p-0 overflow-hidden shadow-2xl  max-h-[90vh] "
+        className="bg-white rounded-t-2xl sm:rounded-xl w-full sm:max-w-3xl sm:mx-4 p-0 overflow-hidden shadow-2xl max-h-[95vh] sm:max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="bg-blue-600 flex justify-between p-5 text-white ">
+        {/* Header */}
+        <header className="bg-blue-600 flex justify-between items-start p-4 sm:p-5 text-white shrink-0">
           <div>
-            <h1 className="font-bold text-2xl ">Enter Student Score</h1>
-            <p className="text-blue-100 text-sm mt-1">
+            <h1 className="font-bold text-lg sm:text-2xl">
+              Enter Student Score
+            </h1>
+            <p className="text-blue-100 text-xs sm:text-sm mt-1">
               Add new assessment scores and get AI-powered risk prediction
             </p>
           </div>
           <button
             onClick={onClose}
-            className="cursor-pointer text-white hover:bg-blue-500 px-2 py-1 rounded-lg transition"
+            className="cursor-pointer text-white hover:bg-blue-500 p-2 rounded-lg transition shrink-0 ml-4"
           >
-            <RxCross1 size={20} />
+            <RxCross1 size={18} />
           </button>
         </header>
-        <main className="mt-8 bg-white px-6 pb-6">
-          <form>
-            {/**name and academic year */}
-            <div className="grid grid-cols-2 gap-4">
-              {/**name */}
-              <div className="flex flex-col gap-2">
-                <label className="text-md font-semibold">Student Name *</label>
+
+        {/* Scrollable body */}
+        <main className="overflow-y-auto flex-1 px-4 sm:px-6 py-5 sm:py-6">
+          <div className="flex flex-col gap-4">
+            {/* Student Name + Academic Year */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Student Name *</label>
                 <select
                   name="studentId"
                   value={formData.studentId}
                   onChange={handleChange}
-                  className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2"
+                  className={inputClass}
                 >
                   <option value="">Select a student...</option>
                   {students.map((student) => (
@@ -118,38 +112,34 @@ const ScoreModal = ({ onClose, onSuccess }) => {
                   ))}
                 </select>
               </div>
-              {/**academic */}
-              <div className="flex flex-col gap-2">
-                <label className="text-md font-semibold">
-                  Academic Year *
-                </label>
+
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Academic Year *</label>
                 <select
                   name="academicYear"
                   value={formData.academicYear}
                   onChange={handleChange}
-                  className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2"
+                  className={inputClass}
                 >
                   <option value="">Select year...</option>
                   {academicYear.map((year) => (
                     <option key={year} value={year}>
-                      {year}
+                      Year {year}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-            {/**semester and sba score */}
-            {/**semester */}
-            <div className="grid grid-cols-2 gap-4 mt-5">
-              <div className="flex flex-col gap-2">
-                <label className="text-md font-semibold  ">
-                  Semester *
-                </label>
+
+            {/* Semester + SBA Score */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Semester *</label>
                 <select
                   name="semester"
                   value={formData.semester}
                   onChange={handleChange}
-                  className="border border-gray-300  rounded-lg w-full  px-4 py-3 focus:outline-none focus:ring-2"
+                  className={inputClass}
                 >
                   <option value="">Select semester...</option>
                   <option value="1">Semester 1</option>
@@ -157,11 +147,8 @@ const ScoreModal = ({ onClose, onSuccess }) => {
                 </select>
               </div>
 
-              {/**sba score */}
-              <div className="flex flex-col gap-2">
-                <label className="text-md font-semibold  ">
-                  SBA Score (0-100) *
-                </label>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>SBA Score (0–100) *</label>
                 <input
                   name="sbaScore"
                   value={formData.sbaScore}
@@ -170,16 +157,15 @@ const ScoreModal = ({ onClose, onSuccess }) => {
                   min="0"
                   max="100"
                   placeholder="Enter SBA score"
-                  className="border border-gray-300 rounded-lg w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></input>
+                  className={inputClass}
+                />
               </div>
             </div>
-            {/**exam score */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2">
-                <label className="text-md  font-semibold mt-2 ">
-                  Exam Score(0-100)
-                </label>
+
+            {/* Exam Score */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Exam Score (0–100) *</label>
                 <input
                   name="examScore"
                   value={formData.examScore}
@@ -187,30 +173,18 @@ const ScoreModal = ({ onClose, onSuccess }) => {
                   type="number"
                   min="0"
                   max="100"
-                  placeholder="Enter SBA score"
-                  className="border border-gray-300 rounded-lg  px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></input>
+                  placeholder="Enter exam score"
+                  className={inputClass}
+                />
               </div>
-              {/**attendance */}
-              {/* <div className="flex flex-col gap-2">
-                <label className="text-md  text-gray-700 font-semibold mt-2 ">
-                  Attendance(0-100)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  placeholder="Enter attendance"
-                  className="border border-gray-300 rounded-lg  px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></input>
-              </div> */}
             </div>
-            {/** buttons*/}
-            <div className="grid grid-cols-2 gap-4 mt-6">
+
+            {/* Buttons */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-2">
               <button
                 type="button"
                 onClick={onClose}
-                className=" flex-1 px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer"
+                className="px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition cursor-pointer"
               >
                 Cancel
               </button>
@@ -218,12 +192,12 @@ const ScoreModal = ({ onClose, onSuccess }) => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={loading}
-                className=" flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98"
+                className="px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition shadow-md hover:shadow-lg"
               >
-                {loading ? "Predicting.." : "Get  Prediction"}
+                {loading ? "Predicting..." : "Get Prediction"}
               </button>
             </div>
-          </form>
+          </div>
         </main>
       </div>
     </div>

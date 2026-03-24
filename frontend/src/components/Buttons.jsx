@@ -2,30 +2,28 @@ import React from "react";
 
 const config = {
   blue: {
-    bg: "bg-blue-600",
-    icon: "text-white bg-white",
+    bg: "bg-blue-600 hover:bg-blue-700 active:bg-blue-800",
     value: "text-white",
   },
   amber: {
-    bg: "bg-amber-600",
-    icon: "text-white bg-white",
+    bg: "bg-amber-500 hover:bg-amber-600 active:bg-amber-700",
     value: "text-white",
   },
 };
 
 const Buttons = ({ icon, label, color, onClick }) => {
   const styles = config[color];
-
   return (
-    <div
+    <button
       onClick={onClick}
-      className={`flex px-7 py-4 rounded-lg ${styles.bg} shadow-sm cursor-pointer`}
+      type="button"
+      className={`flex items-center justify-center gap-2 w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-4 rounded-lg ${styles.bg} ${styles.value} font-bold text-sm sm:text-base shadow-sm transition-colors duration-150 cursor-pointer`}
     >
-      <div className={`flex items-center  gap-2 font-bold ${styles.value}`}>
-        {icon} {label}
-      </div>
-    </div>
+      {icon}
+      {label}
+    </button>
   );
 };
 
 export default Buttons;
+
