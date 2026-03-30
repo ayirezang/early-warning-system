@@ -18,18 +18,18 @@ const studentSchema = new Schema(
       required: true,
       trim: true,
     },
-    currentYear: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 4,
-    },
-    currentSemester: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 2,
-    },
+    // currentYear: {
+    //   type: Number,
+    //   required: true,
+    //   min: 1,
+    //   max: 4,
+    // },
+    // currentSemester: {
+    //   type: Number,
+    //   required: true,
+    //   min: 1,
+    //   max: 2,
+    // },
     attendance: {
       type: Number,
       default: 100,

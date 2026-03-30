@@ -78,10 +78,10 @@ export const enterScoreApi = async (scoreData) => {
 };
 
 // GET MY STUDENTS for table
-export const getMyStudentsApi = async (teacherId, academicYear, semester) => {
+export const getMyStudentsApi = async (teacherId) => {
   try {
     const response = await api.get("/students", {
-      params: { teacherId, academicYear, semester },
+      params: { teacherId },
     });
     return response.data;
   } catch (error) {

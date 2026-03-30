@@ -13,18 +13,18 @@ const subjectScoreSchema = new Schema(
       ref: "User",
       required: true,
     },
-    academicYear: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 4,
-    },
-    semester: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 2,
-    },
+    // academicYear: {
+    //   type: Number,
+    //   required: true,
+    //   min: 1,
+    //   max: 4,
+    // },
+    // semester: {
+    //   type: Number,
+    //   required: true,
+    //   min: 1,
+    //   max: 2,
+    // },
     subject: {
       type: String,
       required: true,

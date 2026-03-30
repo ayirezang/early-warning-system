@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
-import { AuthContext } from "../context/AuthContext";
+
 import { enterScoreApi, getAllStudentsApi } from "../api/api";
+import useAuthStore from "../store/authStore";
 
 const ScoreModal = ({ onClose, onSuccess }) => {
-  const { teacherId } = useContext(AuthContext);
+  const teacherId = useAuthStore((state) => state.teacherId);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -34,6 +35,11 @@ const ScoreModal = ({ onClose, onSuccess }) => {
   };
 
   const handleSubmit = async () => {
+    console.log("teacherId:", teacherId);
+    console.log("studentId:", formData.studentId);
+    console.log("sbaScore:", formData.sbaScore);
+    console.log("examScore:", formData.examScore);
+
     setLoading(true);
     try {
       const data = await enterScoreApi({

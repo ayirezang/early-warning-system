@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineSchool } from "react-icons/md";
 import { MdOutlineEmail } from "react-icons/md";
 import { TbLockPassword } from "react-icons/tb";
 import { IoEyeOutline } from "react-icons/io5";
 import { loginApi } from "../api/api";
-import { AuthContext } from "../context/AuthContext";
+import useAuthStore from "../store/authStore";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,8 +13,8 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const { setFirstName, setLastName, setSubject, setTeacherId } =
-    useContext(AuthContext);
+
+  const setUser = useAuthStore((state) => state.setUser);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({
@@ -57,11 +57,8 @@ const Login = () => {
       console.log("login data:", formData);
       const data = await loginApi(formData);
       console.log("login response:", data);
-      setFirstName(data.user.firstName);
-      setLastName(data.user.lastName);
-      setSubject(data.user.subject);
-      setTeacherId(data.user._id);
-      setTeacherId(data.user._id);
+      
+      setUser(data.user);
 
       // alert("Logged in!");
       navigate("/dashboard");

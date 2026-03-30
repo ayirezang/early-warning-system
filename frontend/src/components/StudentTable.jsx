@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import StudentRow from "./StudentRow";
 import { getMyStudentsApi } from "../api/api";
-import { AuthContext } from "../context/AuthContext";
+
+import useAuthStore from "../store/authStore";
 
 const StudentTable = ({ refresh }) => {
-  const { teacherId } = useContext(AuthContext);
+  const teacherId = useAuthStore((state) => state.teacherId);
+
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,9 +52,9 @@ const StudentTable = ({ refresh }) => {
         </p>
       </div>
 
-      {/* Scrollable table wrapper */}
+      {/* table wrapper */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[600px]">
+        <table className="w-full min-w-150">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               {["Name", "Student ID", "SBA Score", "Exam Score", "Status"].map(
@@ -79,4 +81,3 @@ const StudentTable = ({ refresh }) => {
 };
 
 export default StudentTable;
-

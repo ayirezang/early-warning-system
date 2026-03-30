@@ -3,7 +3,7 @@ import Student from "../models/student.js";
 import SubjectScore from "../models/subjectScoreModel.js";
 // const subjectAI = require("../ml/subjectAI");
 
-// 1. ENTER SCORE (AI predicts automatically)
+// 1. enter score (AI predicts automatically)
 
 export const enterScore = async (req, res) => {
   try {
@@ -108,7 +108,7 @@ export const enterScore = async (req, res) => {
   }
 };
 
-// 2. GET MY STUDENTS
+// 2. get my students
 
 export const getMyStudents = async (req, res) => {
   try {
@@ -130,19 +130,21 @@ export const getMyStudents = async (req, res) => {
       });
     }
 
-    // Get all students
+    // get all students
     const students = await Student.find({ isActive: true });
 
     // Check which students have scores entered
     const studentsWithStatus = await Promise.all(
       students.map(async (student) => {
-        const score = await SubjectScore.findOne({
+        const query = {
           studentId: student._id,
           teacherId,
           subject: teacher.subject,
-          academicYear,
-          semester,
-        });
+        };
+
+        if (academicYear) query.academicYear = academicYear;
+        if (semester) query.semester = semester;
+        const score = await SubjectScore.findOne(query);
 
         return {
           id: student._id,
@@ -199,7 +201,7 @@ export const getAtRiskStudents = async (req, res) => {
       });
     }
 
-    // Get all HIGH and CRITICAL risk students
+    // Get all high and critical risk students
     const atRiskScores = await SubjectScore.find({
       teacherId,
       academicYear,
@@ -240,7 +242,7 @@ export const getAtRiskStudents = async (req, res) => {
   }
 };
 
-// 4. GET ALL STUDENTS (for dropdown)
+// 4. get all sytudents (for dropdown)
 
 export const getAllStudents = async (req, res) => {
   try {

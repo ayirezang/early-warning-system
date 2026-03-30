@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiShield } from "react-icons/fi";
 import { MdOutlineSchool } from "react-icons/md";
@@ -8,7 +9,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { IoSchoolOutline } from "react-icons/io5";
 import { signUpApi } from "../api/api";
-import { AuthContext } from "../context/AuthContext";
+import useAuthStore from "../store/authStore";
 const SignUp = () => {
   const navigate = useNavigate();
   const [error, setError] = useState({
@@ -33,8 +34,8 @@ const SignUp = () => {
     role: "",
     subject: "",
   });
-  const { setFirstName, setLastName, setSubject, setTeacherId } =
-    useContext(AuthContext);
+  
+  const setUser = useAuthStore((state) => state.setUser);
   //handlechange
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,10 +96,8 @@ const SignUp = () => {
     try {
       console.log("signup data:", formData);
       const data = await signUpApi(formData);
-      setFirstName(data.user.firstName);
-      setLastName(data.user.lastName);
-      setSubject(data.user.subject);
-      setTeacherId(data.user._id);
+      
+      setUser(data.user);
       // alert("account created");
       navigate("/dashboard");
     } catch (error) {
@@ -107,10 +106,7 @@ const SignUp = () => {
         "sign up failed:" + (error.response?.data.message || error.message),
       );
       console.error;
-      // setError((prev) => ({
-      //   ...prev,
-      //   email: error.response?.data?.msg || "something",
-      // }));
+      
     } finally {
       setLoading(false);
     }
