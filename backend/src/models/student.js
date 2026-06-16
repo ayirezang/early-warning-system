@@ -18,24 +18,28 @@ const studentSchema = new Schema(
       required: true,
       trim: true,
     },
-    // currentYear: {
-    //   type: Number,
-    //   required: true,
-    //   min: 1,
-    //   max: 4,
-    // },
-    // currentSemester: {
-    //   type: Number,
-    //   required: true,
-    //   min: 1,
-    //   max: 2,
-    // },
-    attendance: {
-      type: Number,
-      default: 100,
-      min: 1,
-      max: 100,
+    className: {
+      type: String,
+      required: true,
+      trim: true,
     },
+    year: {
+      type: String,
+      required: true,
+      enum: ["SHS 1", "SHS 2", "SHS 3"],
+    },
+    programme: {
+      type: String,
+      required: true,
+      enum: [
+        "General Arts",
+        " Science",
+        "Business",
+        "Visual Arts",
+        "Home Economics",
+      ],
+    },
+
     currentRiskCategory: {
       type: String,
       enum: ["LOW", "HIGH", "UNKNOWN"],

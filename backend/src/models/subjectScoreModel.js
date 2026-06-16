@@ -13,18 +13,16 @@ const subjectScoreSchema = new Schema(
       ref: "User",
       required: true,
     },
-    // academicYear: {
-    //   type: Number,
-    //   required: true,
-    //   min: 1,
-    //   max: 4,
-    // },
-    // semester: {
-    //   type: Number,
-    //   required: true,
-    //   min: 1,
-    //   max: 2,
-    // },
+
+    academicYear: {
+      type: String,
+      required: true,
+    },
+    semester: {
+      type: String,
+      required: true,
+      enum: ["1", "2"],
+    },
     subject: {
       type: String,
       required: true,
@@ -42,18 +40,13 @@ const subjectScoreSchema = new Schema(
       min: 0,
       max: 100,
     },
+
     aiPrediction: {
       willFailSubject: {
         type: Boolean,
         required: true,
       },
 
-      // riskPercent: {
-      //   type: Number,
-      //   required: true,
-      //   min: 0,
-      //   max: 100,
-      // },
       riskCategory: {
         type: String,
         required: true,
@@ -62,6 +55,10 @@ const subjectScoreSchema = new Schema(
     },
     enteredBy: {
       type: String,
+    },
+    className: {
+      type: String,
+      required: true,
     },
   },
 

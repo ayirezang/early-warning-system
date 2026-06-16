@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiShield } from "react-icons/fi";
@@ -34,7 +33,7 @@ const SignUp = () => {
     role: "",
     subject: "",
   });
-  
+
   const setUser = useAuthStore((state) => state.setUser);
   //handlechange
   const handleChange = (e) => {
@@ -96,7 +95,7 @@ const SignUp = () => {
     try {
       console.log("signup data:", formData);
       const data = await signUpApi(formData);
-      
+
       setUser(data.user);
       // alert("account created");
       navigate("/dashboard");
@@ -106,7 +105,6 @@ const SignUp = () => {
         "sign up failed:" + (error.response?.data.message || error.message),
       );
       console.error;
-      
     } finally {
       setLoading(false);
     }
@@ -293,7 +291,7 @@ const SignUp = () => {
                   <option value="">select subject</option>
                   <option value="Mathematics">Mathematics</option>
                   <option value="Science">Science</option>
-                  <option value="English">English Language</option>
+                  <option value="English">English</option>
                   <option value="Social Studies">Social Studies</option>
                 </select>
                 {error.subject && (
