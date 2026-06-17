@@ -13,14 +13,5 @@ router.get("/students", getMyStudents);
 router.get("/at-risk", getAtRiskStudents);
 router.get("/all-students", getAllStudents);
 
-router.post("/add-student", async (req, res) => {
-  try {
-    const student = new Student(req.body);
-    await student.save();
-    res.json({ success: true, student });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
 
 export default router;

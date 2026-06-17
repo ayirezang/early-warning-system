@@ -46,14 +46,7 @@ export const enterScore = async (req, res) => {
       willFailSubject: totalScore < 50,
       riskCategory: totalScore >= 50 ? "LOW" : "HIGH",
     };
-    // USE AI TO PREDICT RISK
-    // const aiPrediction = subjectAI.predictSubjectRisk(
-    //   student.attendance,
-    //   sbaScore,
-    //   examScore,
-    // );
 
-    // Save score with AI prediction
     const subjectScore = new SubjectScore({
       studentId,
       teacherId,

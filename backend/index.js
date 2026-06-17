@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 //import routes
 import riskRoutes from "./src/routes/riskRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
+import adminRoutes from "./src/routes/adminRoutes.js";
 //middleware
 app.use(
   cors({
@@ -19,6 +20,7 @@ app.use(express.json());
 //use routes
 app.use("/api", riskRoutes);
 app.use("/api", userRoutes);
+app.use("/api", adminRoutes);
 
 mongoose
   .connect(process.env.MONGO_DB)
