@@ -4,7 +4,7 @@ import { CiLogin } from "react-icons/ci";
 import useAuthStore from "../store/authStore";
 
 const Header = () => {
-  const { firstName, lastName, subject } = useAuthStore((state) => state);
+  const { firstName, lastName, subject, role } = useAuthStore((state) => state);
 
   return (
     <header className="border-b border-gray-200 shadow-md">
@@ -34,7 +34,7 @@ const Header = () => {
                 {firstName} {lastName}
               </p>
               <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
-                {subject} Teacher
+                {role === "ADMIN" ? "Administrator" : `${subject} Teacher`}
               </p>
             </div>
             <Link to="/">

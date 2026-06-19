@@ -7,12 +7,14 @@ const useAuthStore = create(
       firstName: "",
       lastName: "",
       subject: "",
+      role: "",
       setUser: (user) =>
         set({
           teacherId: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
           subject: user.subject,
+          role: user.role,
         }),
       clearUser: () =>
         set({
@@ -20,6 +22,7 @@ const useAuthStore = create(
           firstName: "",
           lastName: "",
           subject: "",
+          role: "",
         }),
     }),
     { name: "auth" },

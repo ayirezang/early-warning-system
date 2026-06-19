@@ -61,7 +61,7 @@ const Login = () => {
       setUser(data.user);
 
       // alert("Logged in!");
-      navigate("/dashboard");
+      navigate(data.user.role === "ADMIN" ? "/adminDashboard" :"/dashboard");
     } catch (error) {
       console.error("full error:", error.response?.data);
       alert(

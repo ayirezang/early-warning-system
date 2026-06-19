@@ -98,7 +98,7 @@ const SignUp = () => {
 
       setUser(data.user);
       // alert("account created");
-      navigate("/dashboard");
+      navigate(data.user.role === "ADMIN" ? "/adminDashboard" : "/dashboard");
     } catch (error) {
       console.error("full error:", error.response?.data);
       alert(
