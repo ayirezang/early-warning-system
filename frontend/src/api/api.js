@@ -89,3 +89,25 @@ export const getMyStudentsApi = async (teacherId) => {
     throw error;
   }
 };
+
+//admin filling students api
+
+export const getAdminStudentApi = async () => {
+  try {
+    const response = await api.get("/students");
+    return response.data;
+  } catch (error) {
+    console.error("admin get students error", error);
+    throw error;
+  }
+};
+//
+export const addAdminStudentApi = async (studentData) => {
+  try {
+    const response = await api.post("admin/add-student", studentData);
+    return response.data;
+  } catch (error) {
+    console.error("enter student data", error);
+    throw error;
+  }
+};

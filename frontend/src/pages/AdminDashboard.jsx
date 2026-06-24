@@ -1,6 +1,7 @@
 import React from "react";
 import StatCard from "../components/StatCard";
 import Header from "../components/Header";
+import AdminStudentable from "../components/AdminStudentable";
 
 const AdminDashboard = () => {
   return (
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
           <StatCard label="Total teachers" value={10} />
           <StatCard label="AT-risk students" value={8} />
         </div>
+        <AdminStudentable />
       </main>
     </div>
   );

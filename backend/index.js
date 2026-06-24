@@ -20,7 +20,7 @@ app.use(express.json());
 //use routes
 app.use("/api", riskRoutes);
 app.use("/api", userRoutes);
-app.use("/api", adminRoutes);
+app.use("/api/admin", adminRoutes);
 
 mongoose
   .connect(process.env.MONGO_DB)
