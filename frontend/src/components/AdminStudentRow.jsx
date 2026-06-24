@@ -1,6 +1,7 @@
 import React from "react";
 
 const AdminStudentRow = ({ student }) => {
+  
   return (
     <tr className="hover:bg-gray-50 transition-colors duration-150">
       <td>{student.id}</td>

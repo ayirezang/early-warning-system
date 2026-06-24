@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import StatCard from "../components/StatCard";
 import Header from "../components/Header";
 import AdminStudentable from "../components/AdminStudentable";
+import AddStudentModal from "../components/AddStudentModal";
 
 const AdminDashboard = () => {
+  const [open, setOpen] = useState(false);
   return (
     <div>
       <Header />
@@ -13,6 +15,8 @@ const AdminDashboard = () => {
           <StatCard label="Total teachers" value={10} />
           <StatCard label="AT-risk students" value={8} />
         </div>
+        {/* Add student modal */}
+        {open && <AddStudentModal onClosed={() => setOpen(false)} />}
         <AdminStudentable />
       </main>
     </div>

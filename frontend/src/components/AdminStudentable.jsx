@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { GoPlus } from "react-icons/go";
 
 import AdminStudentRow from "./AdminStudentRow";
 import { getAdminStudentApi } from "../api/api";
@@ -6,6 +7,7 @@ import { getAdminStudentApi } from "../api/api";
 const AdminStudentable = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -17,14 +19,19 @@ const AdminStudentable = () => {
       } finally {
         setLoading(false);
       }
-    }
-
-  },[]);
+    };
+  }, []);
   return (
     <div className="bg-white  w-full ">
       <div className="flex justify-between">
         <h2>students</h2>
-        <button className="px-4 py-2 gb-blue-200">add student</button>
+        <button
+          className="px-4 py-2 bg-blue-200 rounded-xl flex justify-center items-center gap-2 hover:bg-blue-300 text-white "
+          onClick={() => setOpen(true)}
+        >
+          <GoPlus />
+          add student
+        </button>
       </div>
       <table className="w-full">
         <thead>
@@ -37,13 +44,7 @@ const AdminStudentable = () => {
           </tr>
         </thead>
         <tbody>
-          {/* <tr>
-            <td>0000</td>
-            <td>Asare Puis</td>
-            <td>SHS2</td>
-            <td>Visual Arts</td>
-            <td>2VA1</td>
-          </tr> */}
+          
           {students.map((student) => {
             return <AdminStudentRow key={student.id} student={student} />;
           })}
