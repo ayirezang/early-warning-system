@@ -1,11 +1,13 @@
-import React, { useState } from "react";
 import StatCard from "../components/StatCard";
 import Header from "../components/Header";
 import AdminStudentable from "../components/AdminStudentable";
+import Buttons from "../components/Buttons";
 import AddStudentModal from "../components/AddStudentModal";
+import { GoPlus } from "react-icons/go";
+import { useState } from "react";
 
 const AdminDashboard = () => {
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div>
       <Header />
@@ -15,9 +17,18 @@ const AdminDashboard = () => {
           <StatCard label="Total teachers" value={10} />
           <StatCard label="AT-risk students" value={8} />
         </div>
-        {/* Add student modal */}
-        {open && <AddStudentModal onClosed={() => setOpen(false)} />}
-        <AdminStudentable />
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <Buttons
+            icon={<GoPlus size={24} />}
+            label="Enter new score"
+            color="blue"
+            onClick={() => setIsOpen(true)}
+          />
+        </div>
+        {isOpen && <AddStudentModal onClose={() => setIsOpen(false)} />}
+        <div>
+          <AdminStudentable />
+        </div>
       </main>
     </div>
   );
