@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GoPlus } from "react-icons/go";
-import AddStudentModal from "./AddStudentModal";
+
 import AdminStudentRow from "./AdminStudentRow";
 import { getAdminStudentApi } from "../api/api";
 
@@ -58,28 +57,11 @@ const AdminStudentable = () => {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {students.map((student) => (
-              <StudentRow key={student.id} student={student} />
+              <AdminStudentRow key={student.id} student={student} />
             ))}
           </tbody>
         </table>
       </div>
-      {/* <table className="w-full min-w-150">
-        <thead>
-          <tr className="">
-            <th>Student ID</th>
-            <th>Name</th>
-            <th>YEAR</th>
-            <th>PROGRAMME</th>
-            <th>CLASS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students.map((student) => {
-            return <AdminStudentRow key={student.id} student={student} />;
-          })}
-        </tbody>
-        </div>
-      </table> */}
     </div>
   );
 };
