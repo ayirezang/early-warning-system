@@ -1,14 +1,17 @@
 import React from "react";
 import { useState } from "react";
+import { GoPlus } from "react-icons/go";
+import { RxCross1 } from "react-icons/rx";
+import { addAdminStudentApi } from "../api/api";
 
-const AddStudentModal = ({ onClose }) => {
+const AddStudentModal = ({ onClose, onSuccess }) => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     studentId: "",
     firstName: "",
     lastName: "",
     programme: "",
     year: "",
-    class: "",
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,13 +19,35 @@ const AddStudentModal = ({ onClose }) => {
   };
   //haandle submit function
   const handleSubmit = async () => {
-    console.log("studentId:", formData.studentId);
-    console.log("firstName:", formData.firstName);
-    console.log("lastName", formData.lastName);
-    console.log("programme:", formData.programme);
-    console.log("year", formData.year);
-    console.log("class", formData.class);
+    setLoading(true);
+    try {
+      await addAdminStudentApi({
+        studentId: formData.studentId,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        programme: formData.programme,
+        year: formData.year,
+      });
+      alert("Student added successfully");
+      onSuccess();
+      onClose();
+      // console.log("studentId:", formData.studentId);
+      // console.log("firstName:", formData.firstName);
+      // console.log("lastName", formData.lastName);
+      // console.log("programme:", formData.programme);
+      // console.log("year", formData.year);
+      // console.log("class", formData.class);
+    } catch (error) {
+      alert(
+        "Failed to add student: " +
+          (error.response?.data?.error || error.message),
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+  //call api to add student
+
   // Define CSS classes for input and label elements
   const inputClass =
     "border border-gray-300 rounded-lg w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -36,6 +61,12 @@ const AddStudentModal = ({ onClose }) => {
         <header className="bg-blue-600 flex justify-between items-start p-4 sm:p-5 text-white shrink-0">
           Add Student
           <hr className="bg-gray-600"></hr>
+          <button
+            onClick={onClose}
+            className="cursor-pointer text-white hover:bg-blue-500 p-2 rounded-lg transition shrink-0 ml-4"
+          >
+            <RxCross1 size={18} />
+          </button>
         </header>
 
         {/**main body */}
@@ -52,8 +83,8 @@ const AddStudentModal = ({ onClose }) => {
               />
             </div>
             {/**first nmae */}
-            <div className="gap-2">
-              <div>
+            <div className=" flex col-span-2 gap-4">
+              <div className="flex-1">
                 <label className={labelClass}>First Name</label>
                 <input
                   className={inputClass}
@@ -63,7 +94,7 @@ const AddStudentModal = ({ onClose }) => {
                 />
               </div>
               {/**last name */}
-              <div>
+              <div className="flex-1">
                 <label className={labelClass}>Last Name</label>
                 <input
                   className={inputClass}
@@ -75,8 +106,8 @@ const AddStudentModal = ({ onClose }) => {
             </div>
 
             {/**programme */}
-            <div>
-              <div>
+            <div className=" flex col-span-2 gap-4">
+              <div className="flex-1">
                 <label className={labelClass}>Programme</label>
                 <select
                   className={inputClass}
@@ -92,7 +123,7 @@ const AddStudentModal = ({ onClose }) => {
                 </select>
               </div>
               {/**year */}
-              <div>
+              <div className="flex-1">
                 <label className={labelClass}>Year</label>
                 <select
                   className={inputClass}
@@ -120,19 +151,24 @@ const AddStudentModal = ({ onClose }) => {
             </div>
             {/**submit button  and cancel button */}
           </div>
-          <div className="flex justify-end gap-2 mt-5 md:mt-6 lg:mt-8">
-            <button
+          <div className=" bg-blue-500 flex justify-center items w-full   mt-5 md:mt-6 lg:mt-8">
+            {/* <button
               className="bg-gray-500 hover:bg-gray-600 cursor-pointer text-white py-2 px-4 rounded"
               onClick={onClose}
             >
               Cancel
-            </button>
+            </button> */}
+            <div>
+              <GoPlus />
+            </div>
             <button
               type="button"
               onClick={handleSubmit}
-              className="bg-blue-500 hover:bg-blue-600 cursor-pointer text-white py-2 px-4 rounded"
+              disabled={loading}
+              className=" hover:bg-blue-600 cursor-pointer text-white py-2 px-4 rounded"
             >
-              Submit
+              Add Student
+              {loading ? "Adding..." : "Add Student"}
             </button>
           </div>
         </main>
