@@ -4,7 +4,7 @@ import Login from "./pages/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignUp from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import AdminDashboard from "./pages/adminDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   return (
@@ -13,7 +13,7 @@ const App = () => {
         <Route path="/" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/adminDashboard" element={<AdminDashboard/>} />
+        <Route path="/adminDashboard" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
   );
