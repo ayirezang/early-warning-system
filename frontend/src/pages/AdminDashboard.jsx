@@ -8,6 +8,7 @@ import { useState } from "react";
 
 const AdminDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [refresh, setRefresh] = useState(0);
   return (
     <div>
       <Header />
@@ -25,9 +26,15 @@ const AdminDashboard = () => {
             onClick={() => setIsOpen(true)}
           />
         </div>
-        {isOpen && <AddStudentModal onClose={() => setIsOpen(false)} />}
+        {isOpen && (
+          <AddStudentModal
+            onClose={() => setIsOpen(false)}
+            onSuccess={() => setRefresh((prev) => prev + 1)}
+          />
+        )}
+
         <div>
-          <AdminStudentable />
+          <AdminStudentable refresh={refresh} />
         </div>
       </main>
     </div>

@@ -57,9 +57,8 @@ const StudentTable = ({ refresh }) => {
         <table className="w-full min-w-150">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              {["Name", "Student ID", "SBA Score", "Exam Score", "Status"].map(
-                (heading) => (
-                  <th
+              {["Student ID", "Name", "SBA Score", "Exam Score", "Status"].map(
+                (heading) => ( <th
                     key={heading}
                     className="text-left text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wide px-4 sm:px-6 py-3 sm:py-4"
                   >

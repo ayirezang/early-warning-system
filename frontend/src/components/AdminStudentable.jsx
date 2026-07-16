@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import AdminStudentRow from "./AdminStudentRow";
 import { getAdminStudentApi } from "../api/api";
 
-const AdminStudentable = () => {
+const AdminStudentable = ({ refresh }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +19,7 @@ const AdminStudentable = () => {
       }
     };
     fetchStudents();
-  }, []);
+  }, [refresh]);
   if (loading)
     return (
       <div className="flex items-center justify-center py-12 ">
@@ -43,7 +43,7 @@ const AdminStudentable = () => {
         <table className="w-full min-w-150">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              {["Name", "Student ID", "Name", "YEAR", "PROGRAMME", "CLASS"].map(
+              {["Student ID", "Name", "Year", "Programme", "Class"].map(
                 (heading) => (
                   <th
                     key={heading}

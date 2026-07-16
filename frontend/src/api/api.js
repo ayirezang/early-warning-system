@@ -94,7 +94,7 @@ export const getMyStudentsApi = async (teacherId) => {
 
 export const getAdminStudentApi = async () => {
   try {
-    const response = await api.get("/students");
+    const response = await api.get("/admin/students");
     return response.data;
   } catch (error) {
     console.error("admin get students error", error);

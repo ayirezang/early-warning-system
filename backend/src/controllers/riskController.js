@@ -1,9 +1,6 @@
 import User from "../models/userModel.js";
 import Student from "../models/student.js";
 import SubjectScore from "../models/subjectScoreModel.js";
-// const subjectAI = require("../ml/subjectAI");
-
-// 1. enter score (AI predicts automatically)
 
 export const enterScore = async (req, res) => {
   try {

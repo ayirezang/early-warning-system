@@ -2,14 +2,26 @@ import Student from "../models/student.js";
 
 export const addStudent = async (req, res) => {
   try {
-    const { studentId, firstName, lastName, year, programme } = req.body;
+    const { firstName, lastName, year, programme } = req.body;
     //validate fiels
-    if (!studentId || !firstName || !lastName || !year || !programme) {
+    if (!firstName || !lastName || !year || !programme) {
       return res.status(400).json({
         success: false,
         error: "missing fields",
       });
     }
+    //
+    const lastStudent = await Student.findOne({ studentId: /^ST-\d+$/ })
+      .sort({ studentId: -1 })
+      .collation({ locale: "en_US", numericOrdering: true });
+
+    let nextNumber = 1;
+    if (lastStudent) {
+      const lastNum = parseInt(lastStudent.studentId.split("-")[1], 10);
+      nextNumber = lastNum + 1;
+    }
+    const studentId = `ST-${String(nextNumber).padStart(3, "0")}`;
+
     const className = `${year} - ${programme}`;
     const student = new Student({
       studentId,

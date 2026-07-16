@@ -33,7 +33,7 @@ const studentSchema = new Schema(
       required: true,
       enum: [
         "General Arts",
-        " Science",
+        " General Science",
         "Business",
         "Visual Arts",
         "Home Economics",

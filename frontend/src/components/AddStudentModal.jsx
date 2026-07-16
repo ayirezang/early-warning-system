@@ -7,7 +7,7 @@ import { addAdminStudentApi } from "../api/api";
 const AddStudentModal = ({ onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    studentId: "",
+    // studentId: "",
     firstName: "",
     lastName: "",
     programme: "",
@@ -31,12 +31,6 @@ const AddStudentModal = ({ onClose, onSuccess }) => {
       alert("Student added successfully");
       onSuccess();
       onClose();
-      // console.log("studentId:", formData.studentId);
-      // console.log("firstName:", formData.firstName);
-      // console.log("lastName", formData.lastName);
-      // console.log("programme:", formData.programme);
-      // console.log("year", formData.year);
-      // console.log("class", formData.class);
     } catch (error) {
       alert(
         "Failed to add student: " +
@@ -72,16 +66,6 @@ const AddStudentModal = ({ onClose, onSuccess }) => {
         {/**main body */}
         <main className="overflow-y-auto flex-1 px-4 sm:px-6 py-5 sm:py-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/**student id */}
-            <div className="col-span-2">
-              <label className={labelClass}>Student Id</label>
-              <input
-                className={inputClass}
-                value={formData.studentId}
-                onChange={handleChange}
-                name="studentId"
-              />
-            </div>
             {/**first nmae */}
             <div className=" flex col-span-2 gap-4">
               <div className="flex-1">
@@ -132,32 +116,14 @@ const AddStudentModal = ({ onClose, onSuccess }) => {
                   name="year"
                 >
                   <option value="">Select a year</option>
-                  <option value="1">Year 1</option>
-                  <option value="2">Year 2</option>
-                  <option value="3">Year 3</option>
+                  <option value="SHS 1">SHS 1</option>
+                  <option value="SHS 2">SHS 2</option>
+                  <option value="SHS  3">SHS 3</option>
                 </select>
               </div>
             </div>
-            {/**class */}
-            <div className="col-span-2">
-              <label className={labelClass}>Class</label>
-              <input
-                className={inputClass}
-                value={formData.class}
-                onChange={handleChange}
-                name="class"
-                placeholder="E.g.1A"
-              />
-            </div>
-            {/**submit button  and cancel button */}
           </div>
           <div className=" bg-blue-500 flex justify-center items w-full   mt-5 md:mt-6 lg:mt-8">
-            {/* <button
-              className="bg-gray-500 hover:bg-gray-600 cursor-pointer text-white py-2 px-4 rounded"
-              onClick={onClose}
-            >
-              Cancel
-            </button> */}
             <div>
               <GoPlus />
             </div>
