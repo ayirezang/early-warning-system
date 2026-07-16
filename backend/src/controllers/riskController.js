@@ -1,7 +1,47 @@
 import User from "../models/userModel.js";
 import Student from "../models/student.js";
 import SubjectScore from "../models/subjectScoreModel.js";
+import axios from "axios";
 
+function getRuleBasedPrediction(sbaScore, examScore) {
+  const totalScore = sbaScore * 0.3 + examScore * 0.7;
+  return {
+    willFailSubject: totalScore < 50,
+    riskCategory: totalScore >= 50 ? "LOW" : "HIGH",
+    explanation:
+      "Rule-based prediction: If total score < 50, student is at risk of failing. Otherwise, low risk.",
+    source: "rule-based",
+  };
+}
+
+// get ai prediction
+async function getAIPrediction(sbaScore, examScore) {
+  const prompt = `Given the following scores: SBA Score: ${sbaScore}, Exam Score: ${examScore}, predict if the student is at risk of failing the subject. Respond with ONLY valid JSON, no markdown, no code fences, in exactly this shape: {"riskCategory": "LOW" | "HIGH", "willFailSubject": true | false, "explanation": "one short sentence"}`;
+
+  const response = await axios.post(
+    "https://openrouter.ai/api/v1/chat/completions",
+    {
+      model: "poolside/laguna-m.1:free",
+      messages: [{ role: "user", content: prompt }],
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      timeout: 10000,
+    },
+  );
+
+  const raw = response.data.choices[0].message.content.trim();
+  const cleaned = raw.replace(/```json|```/g, "").trim();
+  const parsed = JSON.parse(cleaned);
+  console.log("AI prediction succeeded:", parsed);
+
+  return { ...parsed, source: "ai" };
+}
+
+//enter score
 export const enterScore = async (req, res) => {
   try {
     const {
@@ -38,11 +78,13 @@ export const enterScore = async (req, res) => {
         error: "Student not found",
       });
     }
-    const totalScore = sbaScore * 0.3 + examScore * 0.7;
-    const aiPrediction = {
-      willFailSubject: totalScore < 50,
-      riskCategory: totalScore >= 50 ? "LOW" : "HIGH",
-    };
+    let aiPrediction;
+    try {
+      aiPrediction = await getAIPrediction(sbaScore, examScore);
+    } catch (aiError) {
+      console.error("AI prediction failed, using fallback:", aiError.message);
+      aiPrediction = getRuleBasedPrediction(sbaScore, examScore);
+    }
 
     const subjectScore = new SubjectScore({
       studentId,
@@ -50,6 +92,7 @@ export const enterScore = async (req, res) => {
       academicYear,
       semester,
       subject: teacher.subject,
+      className: student.className,
       sbaScore,
       examScore,
       aiPrediction,
@@ -73,16 +116,13 @@ export const enterScore = async (req, res) => {
         scores: { sba: sbaScore, exam: examScore },
         aiPrediction,
         warning:
-          aiPrediction.riskCategory === "HIGH" ||
-          aiPrediction.riskCategory === "CRITICAL"
-            ? `AI predicts ${aiPrediction.riskCategory} risk: ${aiPrediction.riskPercent}% chance of failing`
+          aiPrediction.riskCategory === "HIGH"
+            ? `AI predicts HIGH risk: ${aiPrediction.explanation}`
             : null,
       },
     });
   } catch (error) {
     console.error("Enter score error:", error);
-
-    // Check if it's a duplicate entry error
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
@@ -97,9 +137,6 @@ export const enterScore = async (req, res) => {
     });
   }
 };
-
-// 2. get my students
-
 export const getMyStudents = async (req, res) => {
   try {
     const { teacherId, academicYear, semester } = req.query;
@@ -196,7 +233,7 @@ export const getAtRiskStudents = async (req, res) => {
       teacherId,
       academicYear,
       semester,
-      "aiPrediction.riskCategory": { $in: ["HIGH", "CRITICAL"] },
+      "aiPrediction.riskCategory": { $in: ["HIGH", "LOW"] },
     })
       .populate("studentId")
       .sort({ "aiPrediction.riskPercent": -1 }); // Highest risk first

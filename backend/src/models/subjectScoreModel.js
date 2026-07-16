@@ -52,6 +52,13 @@ const subjectScoreSchema = new Schema(
         required: true,
         enum: ["LOW", "HIGH"],
       },
+      explanation: {
+        type: String,
+      },
+      source: {
+        type: String,
+        enum: ["ai", "rule-based"],
+      },
     },
     enteredBy: {
       type: String,
