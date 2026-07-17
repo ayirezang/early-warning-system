@@ -36,9 +36,6 @@ const AdminStudentable = ({ refresh }) => {
 
   return (
     <div className="bg-white  w-full ">
-      <div className="flex justify-between">
-        <h2>students</h2>
-      </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-150">
           <thead className="bg-gray-50 border-b border-gray-200">

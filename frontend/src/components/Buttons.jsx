@@ -26,4 +26,3 @@ const Buttons = ({ icon, label, color, onClick }) => {
 };
 
 export default Buttons;
-
