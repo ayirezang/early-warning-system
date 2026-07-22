@@ -1,14 +1,14 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
+import useAuthStore from "../store/authStore";
 
 const ProtectRoute = ({ children, allowedRole }) => {
-  const user = AuthContext((state) => state.user);
-  if (!user) {
+  const role = useAuthStore((state) => state.role);
+  if (!role) {
     return <Navigate to="/login" />;
   }
-  if (allowedRole && !allowedRole.includes(user.role)) {
-    return <Navigate to="/unauthorized" />;
+  if (allowedRole && !allowedRole.includes(role)) {
+    return <Navigate to="/login" />;
   }
   return children;
 };
