@@ -2,7 +2,10 @@ import User from "../models/userModel.js";
 import Student from "../models/student.js";
 import SubjectScore from "../models/subjectScoreModel.js";
 import axios from "axios";
+import path from "path";
+import { createAgentSession } from "@earendil-works/pi-coding-agent";
 
+//fall back rule-based prediction
 function getRuleBasedPrediction(sbaScore, examScore) {
   const totalScore = sbaScore * 0.3 + examScore * 0.7;
   return {
@@ -15,31 +18,57 @@ function getRuleBasedPrediction(sbaScore, examScore) {
 }
 
 // get ai prediction
-async function getAIPrediction(sbaScore, examScore) {
-  const prompt = `Given the following scores: SBA Score: ${sbaScore}, Exam Score: ${examScore}, predict if the student is at risk of failing the subject. Respond with ONLY valid JSON, no markdown, no code fences, in exactly this shape: {"riskCategory": "LOW" | "HIGH", "willFailSubject": true | false, "explanation": "one short sentence"}`;
+async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
+  const workspaceDir = path.resolve("./agent-home");
 
-  const response = await axios.post(
-    "https://openrouter.ai/api/v1/chat/completions",
-    {
-      model: "poolside/laguna-m.1:free",
-      messages: [{ role: "user", content: prompt }],
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      timeout: 10000,
-    },
-  );
+  // 1. Initialize Agent Session
+  const { session } = await createAgentSession({
+    workspaceDir: workspaceDir,
+    configPath: path.join(workspaceDir, "AGENTS.md"),
+  });
 
-  const raw = response.data.choices[0].message.content.trim();
+  // 2. Prompt Agent with Context
+  const prompt = `Evaluate Student: ${studentName || "Student"} for Subject: ${subjectName || "Subject"}.
+SBA Score: ${sbaScore}, Exam Score: ${examScore}.
+Read your brain context and generate a diagnostic risk assessment. Return strictly valid JSON as specified in your output schema rules.`;
+
+  const response = await session.prompt(prompt);
+
+  // 3. Clean and Parse JSON Output
+  const raw = response.output.trim();
   const cleaned = raw.replace(/```json|```/g, "").trim();
   const parsed = JSON.parse(cleaned);
-  console.log("AI prediction succeeded:", parsed);
 
-  return { ...parsed, source: "ai" };
+  console.log("Agentic AI prediction succeeded:", parsed);
+
+  return { ...parsed, source: "agentic-ai" };
 }
+
+// async function getAIPrediction(sbaScore, examScore) {
+//   const prompt = `Given the following scores: SBA Score: ${sbaScore}, Exam Score: ${examScore}, predict if the student is at risk of failing the subject. Respond with ONLY valid JSON, no markdown, no code fences, in exactly this shape: {"riskCategory": "LOW" | "HIGH", "willFailSubject": true | false, "explanation": "one short sentence"}`;
+
+//   const response = await axios.post(
+//     "https://openrouter.ai/api/v1/chat/completions",
+//     {
+//       model: "poolside/laguna-m.1:free",
+//       messages: [{ role: "user", content: prompt }],
+//     },
+//     {
+//       headers: {
+//         Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+//         "Content-Type": "application/json",
+//       },
+//       timeout: 10000,
+//     },
+//   );
+
+//   const raw = response.data.choices[0].message.content.trim();
+//   const cleaned = raw.replace(/```json|```/g, "").trim();
+//   const parsed = JSON.parse(cleaned);
+//   console.log("AI prediction succeeded:", parsed);
+
+//   return { ...parsed, source: "ai" };
+// }
 
 //enter score
 export const enterScore = async (req, res) => {
@@ -80,11 +109,28 @@ export const enterScore = async (req, res) => {
     }
     let aiPrediction;
     try {
-      aiPrediction = await getAIPrediction(sbaScore, examScore);
+      const studentName = `${student.firstName} ${student.lastName}`;
+      const subjectName = teacher.subject;
+
+      aiPrediction = await getAIPrediction(
+        sbaScore,
+        examScore,
+        studentName,
+        subjectName,
+      );
     } catch (aiError) {
-      console.error("AI prediction failed, using fallback:", aiError.message);
+      console.error(
+        "Agentic AI prediction failed, using fallback:",
+        aiError.message,
+      );
       aiPrediction = getRuleBasedPrediction(sbaScore, examScore);
     }
+    // try {
+    //   aiPrediction = await getAIPrediction(sbaScore, examScore);
+    // } catch (aiError) {
+    //   console.error("AI prediction failed, using fallback:", aiError.message);
+    //   aiPrediction = getRuleBasedPrediction(sbaScore, examScore);
+    // }
 
     const subjectScore = new SubjectScore({
       studentId,
