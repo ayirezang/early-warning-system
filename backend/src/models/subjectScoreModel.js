@@ -55,9 +55,23 @@ const subjectScoreSchema = new Schema(
       explanation: {
         type: String,
       },
+
+      rootCause: {
+        type: String,
+      },
+      remedialPlan: [
+        {
+          type: String,
+        },
+      ],
+      suggestedQuizTopics: [
+        {
+          type: String,
+        },
+      ],
       source: {
         type: String,
-        enum: ["ai", "rule-based"],
+        enum: ["ai", "rule-based", "agentic-ai"],
       },
     },
     enteredBy: {

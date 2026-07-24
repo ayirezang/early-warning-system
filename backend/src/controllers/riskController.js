@@ -5,7 +5,7 @@ import axios from "axios";
 import path from "path";
 import { createAgentSession } from "@earendil-works/pi-coding-agent";
 
-//fall back rule-based prediction
+// Fallback rule-based prediction
 function getRuleBasedPrediction(sbaScore, examScore) {
   const totalScore = sbaScore * 0.3 + examScore * 0.7;
   return {
@@ -17,60 +17,152 @@ function getRuleBasedPrediction(sbaScore, examScore) {
   };
 }
 
-// get ai prediction
+// Get AI prediction using Pi Coding Agent
 async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
   const workspaceDir = path.resolve("./agent-home");
 
-  // 1. Initialize Agent Session
   const { session } = await createAgentSession({
     workspaceDir: workspaceDir,
     configPath: path.join(workspaceDir, "AGENTS.md"),
   });
 
-  // 2. Prompt Agent with Context
-  const prompt = `Evaluate Student: ${studentName || "Student"} for Subject: ${subjectName || "Subject"}.
-SBA Score: ${sbaScore}, Exam Score: ${examScore}.
-Read your brain context and generate a diagnostic risk assessment. Return strictly valid JSON as specified in your output schema rules.`;
+  let responseText = "";
 
-  const response = await session.prompt(prompt);
+  // Subscribe BEFORE prompting — this is the correct SDK pattern
+  session.subscribe((event) => {
+    console.log("EVENT RECEIVED:", JSON.stringify(event, null, 2));
+  });
+  // session.subscribe((event) => {
+  //   if (
+  //     event.type === "message_update" &&
+  //     event.assistantMessageEvent?.type === "text_delta"
+  //   ) {
+  //     responseText += event.assistantMessageEvent.delta;
+  //   }
+  // });
 
-  // 3. Clean and Parse JSON Output
-  const raw = response.output.trim();
-  const cleaned = raw.replace(/```json|```/g, "").trim();
+  const prompt = `First, read AGENTS.md and then read brain/brain.md to load your persona, thresholds, and output schema rules.
+
+Once loaded, evaluate this student:
+Name: ${studentName || "Student"}
+Subject: ${subjectName || "Subject"}
+SBA Score: ${sbaScore}
+Exam Score: ${examScore}
+
+Respond ONLY with valid JSON matching the exact schema defined in brain.md. No markdown, no code fences, no extra text.`;
+
+  await session.prompt(prompt);
+
+  console.log("Raw Agent Response Extracted:", responseText);
+
+  if (!responseText || responseText.trim() === "") {
+    throw new Error("Agent response could not be extracted.");
+  }
+
+  const cleaned = responseText
+    .replace(/```json/gi, "")
+    .replace(/```/g, "")
+    .trim();
+
   const parsed = JSON.parse(cleaned);
 
   console.log("Agentic AI prediction succeeded:", parsed);
 
   return { ...parsed, source: "agentic-ai" };
 }
+// async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
+//   const workspaceDir = path.resolve("./agent-home");
 
-// async function getAIPrediction(sbaScore, examScore) {
-//   const prompt = `Given the following scores: SBA Score: ${sbaScore}, Exam Score: ${examScore}, predict if the student is at risk of failing the subject. Respond with ONLY valid JSON, no markdown, no code fences, in exactly this shape: {"riskCategory": "LOW" | "HIGH", "willFailSubject": true | false, "explanation": "one short sentence"}`;
+//   const { session } = await createAgentSession({
+//     workspaceDir: workspaceDir,
+//     configPath: path.join(workspaceDir, "AGENTS.md"),
+//   });
 
-//   const response = await axios.post(
-//     "https://openrouter.ai/api/v1/chat/completions",
-//     {
-//       model: "poolside/laguna-m.1:free",
-//       messages: [{ role: "user", content: prompt }],
-//     },
-//     {
-//       headers: {
-//         Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-//         "Content-Type": "application/json",
-//       },
-//       timeout: 10000,
-//     },
-//   );
+//   // IMPORTANT: explicitly instruct it to read both files first,
+//   // since automatic AGENTS.md loading was unreliable in testing
+//   const prompt = `First, read AGENTS.md and then read brain/brain.md to load your persona, thresholds, and output schema rules.
 
-//   const raw = response.data.choices[0].message.content.trim();
-//   const cleaned = raw.replace(/```json|```/g, "").trim();
+// Once loaded, evaluate this student:
+// Name: ${studentName || "Student"}
+// Subject: ${subjectName || "Subject"}
+// SBA Score: ${sbaScore}
+// Exam Score: ${examScore}
+
+// Respond ONLY with valid JSON matching the exact schema defined in brain.md. No markdown, no code fences, no extra text.`;
+
+//   const promptResult = await session.prompt(prompt);
+
+//   let responseText = "";
+
+//   // Handle streamed/async iterable responses
+//   if (
+//     promptResult &&
+//     typeof promptResult[Symbol.asyncIterator] === "function"
+//   ) {
+//     for await (const event of promptResult) {
+//       if (
+//         event.type === "message" ||
+//         event.type === "content_block_delta" ||
+//         event.delta
+//       ) {
+//         responseText += event.delta || event.content || event.text || "";
+//       } else if (event.text) {
+//         responseText += event.text;
+//       }
+//     }
+//   } else if (typeof promptResult === "string") {
+//     responseText = promptResult;
+//   } else if (promptResult?.output) {
+//     responseText =
+//       typeof promptResult.output === "string"
+//         ? promptResult.output
+//         : JSON.stringify(promptResult.output);
+//   } else if (promptResult?.content) {
+//     responseText =
+//       typeof promptResult.content === "string"
+//         ? promptResult.content
+//         : JSON.stringify(promptResult.content);
+//   } else if (promptResult?.text) {
+//     responseText = promptResult.text;
+//   }
+
+//   // Fallback: read from session message history if still empty
+//   if (!responseText && typeof session.getMessages === "function") {
+//     const messages = await session.getMessages();
+//     const lastMsg = messages[messages.length - 1];
+//     if (lastMsg) {
+//       responseText =
+//         typeof lastMsg.content === "string"
+//           ? lastMsg.content
+//           : Array.isArray(lastMsg.content)
+//             ? lastMsg.content.map((c) => c.text || c).join("")
+//             : JSON.stringify(lastMsg.content);
+//     }
+//   }
+
+//   console.log("Raw Agent Response Extracted:", responseText);
+
+//   if (
+//     !responseText ||
+//     responseText.trim() === "" ||
+//     responseText === "undefined"
+//   ) {
+//     throw new Error("Agent response could not be extracted.");
+//   }
+
+//   // Clean markdown code fences and parse JSON
+//   const cleaned = responseText
+//     .replace(/```json/gi, "")
+//     .replace(/```/g, "")
+//     .trim();
+
 //   const parsed = JSON.parse(cleaned);
-//   console.log("AI prediction succeeded:", parsed);
 
-//   return { ...parsed, source: "ai" };
+//   console.log("Agentic AI prediction succeeded:", parsed);
+
+//   return { ...parsed, source: "agentic-ai" };
 // }
-
-//enter score
+// Enter score
 export const enterScore = async (req, res) => {
   try {
     const {
@@ -83,7 +175,12 @@ export const enterScore = async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!teacherId || !studentId || !sbaScore || !examScore) {
+    if (
+      !teacherId ||
+      !studentId ||
+      sbaScore === undefined ||
+      examScore === undefined
+    ) {
       return res.status(400).json({
         success: false,
         error: "Missing required fields",
@@ -107,6 +204,7 @@ export const enterScore = async (req, res) => {
         error: "Student not found",
       });
     }
+
     let aiPrediction;
     try {
       const studentName = `${student.firstName} ${student.lastName}`;
@@ -125,12 +223,6 @@ export const enterScore = async (req, res) => {
       );
       aiPrediction = getRuleBasedPrediction(sbaScore, examScore);
     }
-    // try {
-    //   aiPrediction = await getAIPrediction(sbaScore, examScore);
-    // } catch (aiError) {
-    //   console.error("AI prediction failed, using fallback:", aiError.message);
-    //   aiPrediction = getRuleBasedPrediction(sbaScore, examScore);
-    // }
 
     const subjectScore = new SubjectScore({
       studentId,
@@ -183,6 +275,8 @@ export const enterScore = async (req, res) => {
     });
   }
 };
+
+// Get teacher's students
 export const getMyStudents = async (req, res) => {
   try {
     const { teacherId, academicYear, semester } = req.query;
@@ -203,7 +297,7 @@ export const getMyStudents = async (req, res) => {
       });
     }
 
-    // get all students
+    // Get all active students
     const students = await Student.find({ isActive: true });
 
     // Check which students have scores entered
@@ -253,7 +347,7 @@ export const getMyStudents = async (req, res) => {
   }
 };
 
-// 3. GET AT-RISK STUDENTS
+// Get at-risk students
 export const getAtRiskStudents = async (req, res) => {
   try {
     const { teacherId, academicYear, semester } = req.query;
@@ -274,7 +368,7 @@ export const getAtRiskStudents = async (req, res) => {
       });
     }
 
-    // Get all high and critical risk students
+    // Get all high and low risk students
     const atRiskScores = await SubjectScore.find({
       teacherId,
       academicYear,
@@ -282,7 +376,7 @@ export const getAtRiskStudents = async (req, res) => {
       "aiPrediction.riskCategory": { $in: ["HIGH", "LOW"] },
     })
       .populate("studentId")
-      .sort({ "aiPrediction.riskPercent": -1 }); // Highest risk first
+      .sort({ "aiPrediction.riskPercent": -1 });
 
     const students = atRiskScores.map((score) => ({
       student: {
@@ -315,8 +409,7 @@ export const getAtRiskStudents = async (req, res) => {
   }
 };
 
-// 4. get all sytudents (for dropdown)
-
+// Get all students (for dropdown)
 export const getAllStudents = async (req, res) => {
   try {
     const students = await Student.find({ isActive: true })
