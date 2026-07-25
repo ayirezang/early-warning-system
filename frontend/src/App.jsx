@@ -6,12 +6,14 @@ import SignUp from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ProtectRoute from "./components/ProtectRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import Home from "./pages/Home";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SignUp />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route
           path="/dashboard"
