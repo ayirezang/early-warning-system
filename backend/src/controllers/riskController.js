@@ -28,18 +28,17 @@ async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
 
   let responseText = "";
 
-  // Subscribe BEFORE prompting — this is the correct SDK pattern
-  session.subscribe((event) => {
-    console.log("EVENT RECEIVED:", JSON.stringify(event, null, 2));
-  });
   // session.subscribe((event) => {
-  //   if (
-  //     event.type === "message_update" &&
-  //     event.assistantMessageEvent?.type === "text_delta"
-  //   ) {
-  //     responseText += event.assistantMessageEvent.delta;
-  //   }
+  //   console.log("EVENT RECEIVED:", JSON.stringify(event, null, 2));
   // });
+  session.subscribe((event) => {
+    if (
+      event.type === "message_update" &&
+      event.assistantMessageEvent?.type === "text_delta"
+    ) {
+      responseText += event.assistantMessageEvent.delta;
+    }
+  });
 
   const prompt = `First, read AGENTS.md and then read brain/brain.md to load your persona, thresholds, and output schema rules.
 
@@ -70,98 +69,7 @@ Respond ONLY with valid JSON matching the exact schema defined in brain.md. No m
 
   return { ...parsed, source: "agentic-ai" };
 }
-// async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
-//   const workspaceDir = path.resolve("./agent-home");
 
-//   const { session } = await createAgentSession({
-//     workspaceDir: workspaceDir,
-//     configPath: path.join(workspaceDir, "AGENTS.md"),
-//   });
-
-//   // IMPORTANT: explicitly instruct it to read both files first,
-//   // since automatic AGENTS.md loading was unreliable in testing
-//   const prompt = `First, read AGENTS.md and then read brain/brain.md to load your persona, thresholds, and output schema rules.
-
-// Once loaded, evaluate this student:
-// Name: ${studentName || "Student"}
-// Subject: ${subjectName || "Subject"}
-// SBA Score: ${sbaScore}
-// Exam Score: ${examScore}
-
-// Respond ONLY with valid JSON matching the exact schema defined in brain.md. No markdown, no code fences, no extra text.`;
-
-//   const promptResult = await session.prompt(prompt);
-
-//   let responseText = "";
-
-//   // Handle streamed/async iterable responses
-//   if (
-//     promptResult &&
-//     typeof promptResult[Symbol.asyncIterator] === "function"
-//   ) {
-//     for await (const event of promptResult) {
-//       if (
-//         event.type === "message" ||
-//         event.type === "content_block_delta" ||
-//         event.delta
-//       ) {
-//         responseText += event.delta || event.content || event.text || "";
-//       } else if (event.text) {
-//         responseText += event.text;
-//       }
-//     }
-//   } else if (typeof promptResult === "string") {
-//     responseText = promptResult;
-//   } else if (promptResult?.output) {
-//     responseText =
-//       typeof promptResult.output === "string"
-//         ? promptResult.output
-//         : JSON.stringify(promptResult.output);
-//   } else if (promptResult?.content) {
-//     responseText =
-//       typeof promptResult.content === "string"
-//         ? promptResult.content
-//         : JSON.stringify(promptResult.content);
-//   } else if (promptResult?.text) {
-//     responseText = promptResult.text;
-//   }
-
-//   // Fallback: read from session message history if still empty
-//   if (!responseText && typeof session.getMessages === "function") {
-//     const messages = await session.getMessages();
-//     const lastMsg = messages[messages.length - 1];
-//     if (lastMsg) {
-//       responseText =
-//         typeof lastMsg.content === "string"
-//           ? lastMsg.content
-//           : Array.isArray(lastMsg.content)
-//             ? lastMsg.content.map((c) => c.text || c).join("")
-//             : JSON.stringify(lastMsg.content);
-//     }
-//   }
-
-//   console.log("Raw Agent Response Extracted:", responseText);
-
-//   if (
-//     !responseText ||
-//     responseText.trim() === "" ||
-//     responseText === "undefined"
-//   ) {
-//     throw new Error("Agent response could not be extracted.");
-//   }
-
-//   // Clean markdown code fences and parse JSON
-//   const cleaned = responseText
-//     .replace(/```json/gi, "")
-//     .replace(/```/g, "")
-//     .trim();
-
-//   const parsed = JSON.parse(cleaned);
-
-//   console.log("Agentic AI prediction succeeded:", parsed);
-
-//   return { ...parsed, source: "agentic-ai" };
-// }
 // Enter score
 export const enterScore = async (req, res) => {
   try {
@@ -325,6 +233,10 @@ export const getMyStudents = async (req, res) => {
                 exam: score.examScore,
                 risk: score.aiPrediction.riskCategory,
                 riskPercent: score.aiPrediction.riskPercent,
+                explanation: score.aiPrediction.explanation,
+                rootCause: score.aiPrediction.rootCause,
+                remedialPlan: score.aiPrediction.remedialPlan,
+                suggestedQuizTopics: score.aiPrediction.suggestedQuizTopics,
               }
             : null,
         };

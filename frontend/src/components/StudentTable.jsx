@@ -3,12 +3,14 @@ import StudentRow from "./StudentRow";
 import { getMyStudentsApi } from "../api/api";
 
 import useAuthStore from "../store/authStore";
+import StudentRiskModal from "./StudentRiskModal";
 
 const StudentTable = ({ refresh }) => {
   const teacherId = useAuthStore((state) => state.teacherId);
 
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -51,14 +53,14 @@ const StudentTable = ({ refresh }) => {
           {students.length} student{students.length !== 1 ? "s" : ""} enrolled
         </p>
       </div>
-
       {/* table wrapper */}
       <div className="overflow-x-auto">
         <table className="w-full min-w-150">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               {["Student ID", "Name", "SBA Score", "Exam Score", "Status"].map(
-                (heading) => ( <th
+                (heading) => (
+                  <th
                     key={heading}
                     className="text-left text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wide px-4 sm:px-6 py-3 sm:py-4"
                   >
@@ -70,11 +72,37 @@ const StudentTable = ({ refresh }) => {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {students.map((student) => (
-              <StudentRow key={student.id} student={student} />
+              <StudentRow
+                key={student.id}
+                student={student}
+                onClick={() => student.hasScore && setSelectedStudent(student)}
+              />
             ))}
           </tbody>
         </table>
       </div>
+      {/* Student Risk Modal */}
+      {selectedStudent && (
+        <StudentRiskModal
+          student={{
+            firstName: selectedStudent.name.split(" ")[0],
+            lastName: selectedStudent.name.split(" ")[1],
+            studentId: selectedStudent.studentId,
+            status:
+              selectedStudent.score?.risk === "LOW" ? "on  Track" : "At Risk",
+            sbaScore: selectedStudent.score?.sba,
+            examScore: selectedStudent.score?.exam,
+            analysis: {
+              explanation: selectedStudent.score?.explanation,
+              rootCause: selectedStudent.score?.rootCause,
+              remedialPlan: selectedStudent.score?.remedialPlan || [],
+              suggestedQuizTopics:
+                selectedStudent.score?.suggestedQuizTopics || [],
+            },
+          }}
+          onClose={() => setSelectedStudent(null)}
+        />
+      )}
     </div>
   );
 };
