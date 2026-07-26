@@ -123,17 +123,16 @@ const AddStudentModal = ({ onClose, onSuccess }) => {
               </div>
             </div>
           </div>
-          <div className=" bg-blue-500 flex justify-center items w-full   mt-5 md:mt-6 lg:mt-8">
-            <div>
-              <GoPlus />
-            </div>
+          <div className=" bg-blue-600 flex rounded-md justify-center items w-full   mt-5 md:mt-6 lg:mt-8">
+            {/* <div>
+              <GoPlus className="text-white" />
+            </div> */}
             <button
               type="button"
               onClick={handleSubmit}
               disabled={loading}
               className=" hover:bg-blue-600 cursor-pointer text-white py-2 px-4 rounded"
             >
-              Add Student
               {loading ? "Adding..." : "Add Student"}
             </button>
           </div>

@@ -62,12 +62,12 @@ const Dashboard = () => {
             color="blue"
             onClick={() => setIsOpen(true)}
           />
-          <Buttons
+          {/* <Buttons
             icon={<PiWarningCircleLight size={24} />}
             label="View At-Risk Students"
             color="amber"
             onClick={() => setIsOpen(true)}
-          />
+          /> */}
         </div>
 
         {isOpen && (
@@ -86,4 +86,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
