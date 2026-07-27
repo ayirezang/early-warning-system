@@ -4,6 +4,7 @@ import SubjectScore from "../models/subjectScoreModel.js";
 import axios from "axios";
 import path from "path";
 import { createAgentSession } from "@earendil-works/pi-coding-agent";
+import { existsSync } from "fs";
 
 // Fallback rule-based prediction
 function getRuleBasedPrediction(sbaScore, examScore) {
@@ -20,7 +21,10 @@ function getRuleBasedPrediction(sbaScore, examScore) {
 // Get AI prediction using Pi Coding Agent
 async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
   const workspaceDir = path.resolve("./agent-home");
-
+//new
+console.log("Resolved workspaceDir:", workspaceDir);
+console.log("AGENTS.md exists?", existsSync(path.join(workspaceDir, "AGENTS.md")));
+console.log("brain.md exists?", existsSync(path.join(workspaceDir, "brain", "brain.md")));
   const { session } = await createAgentSession({
     workspaceDir: workspaceDir,
     configPath: path.join(workspaceDir, "AGENTS.md"),
@@ -28,9 +32,7 @@ async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
 
   let responseText = "";
 
-  // session.subscribe((event) => {
-  //   console.log("EVENT RECEIVED:", JSON.stringify(event, null, 2));
-  // });
+  
   session.subscribe((event) => {
     if (
       event.type === "message_update" &&
