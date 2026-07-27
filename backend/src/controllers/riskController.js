@@ -4,7 +4,7 @@ import SubjectScore from "../models/subjectScoreModel.js";
 import axios from "axios";
 import path from "path";
 import { createAgentSession } from "@earendil-works/pi-coding-agent";
-import { existsSync } from "fs";
+import { existsSync,readdirSync } from "fs";
 
 // Fallback rule-based prediction
 function getRuleBasedPrediction(sbaScore, examScore) {
@@ -22,6 +22,10 @@ function getRuleBasedPrediction(sbaScore, examScore) {
 async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
   const workspaceDir = path.resolve("./agent-home");
 //new
+
+console.log("Resolved workspaceDir:", workspaceDir);
+console.log("Contents:", existsSync(workspaceDir) ? readdirSync(workspaceDir) : "MISSING");
+console.log("AGENTS.md exists?", existsSync(path.join(workspaceDir, "AGENTS.md")));
 console.log("Resolved workspaceDir:", workspaceDir);
 console.log("AGENTS.md exists?", existsSync(path.join(workspaceDir, "AGENTS.md")));
 console.log("brain.md exists?", existsSync(path.join(workspaceDir, "brain", "brain.md")));
