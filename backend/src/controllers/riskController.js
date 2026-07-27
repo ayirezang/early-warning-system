@@ -4,11 +4,15 @@ import SubjectScore from "../models/subjectScoreModel.js";
 import axios from "axios";
 import path from "path";
 import os from "os";
-import { createAgentSession } from "@earendil-works/pi-coding-agent";
+import { createAgentSession, ModelRuntime } from "@earendil-works/pi-coding-agent";
 import { existsSync, readdirSync, mkdirSync, writeFileSync, chmodSync } from "fs";
 
-// Bootstrap pi agent config so it works even without ~/.pi/agent/ pre-configured
+let _runtime = null;
+let _configEnsured = false;
+
 function ensurePiAgentConfig() {
+  if (_configEnsured) return;
+  _configEnsured = true;
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     console.warn("OPENROUTER_API_KEY not set — agentic AI will fall back to rule-based");
@@ -41,6 +45,13 @@ function ensurePiAgentConfig() {
   }
 }
 
+async function getRuntime() {
+  if (_runtime) return _runtime;
+  ensurePiAgentConfig();
+  _runtime = await ModelRuntime.create();
+  return _runtime;
+}
+
 // Fallback rule-based prediction
 function getRuleBasedPrediction(sbaScore, examScore) {
   const totalScore = sbaScore * 0.3 + examScore * 0.7;
@@ -70,20 +81,22 @@ function getRuleBasedPrediction(sbaScore, examScore) {
 
 // Get AI prediction using Pi Coding Agent
 async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
-  ensurePiAgentConfig();
   const workspaceDir = path.resolve("./agent-home");
 
 console.log("Resolved workspaceDir:", workspaceDir);
 console.log("Contents:", existsSync(workspaceDir) ? readdirSync(workspaceDir) : "MISSING");
 console.log("AGENTS.md exists?", existsSync(path.join(workspaceDir, "AGENTS.md")));
 console.log("brain.md exists?", existsSync(path.join(workspaceDir, "brain", "brain.md")));
+
+  const modelRuntime = await getRuntime();
+
   const { session } = await createAgentSession({
     cwd: workspaceDir,
+    modelRuntime,
   });
 
   let responseText = "";
 
-  
   session.subscribe((event) => {
     if (
       event.type === "message_update" &&
