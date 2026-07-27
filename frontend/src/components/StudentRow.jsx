@@ -19,10 +19,11 @@ const StudentRow = ({ student, onClick }) => {
       className={`hover:bg-gray-50 ${student.hasScore ? "cursor-pointer" : ""}`}
     >
       <td className="px-4 sm:px-6 py-3 sm:py-4 font-semibold text-sm text-gray-900 whitespace-nowrap">
-        {student.name}
+        {student.studentId}
       </td>
       <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-500 whitespace-nowrap">
-        {student.studentId}
+       
+         {student.name}
       </td>
       <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-700">
         {student.hasScore ? (
