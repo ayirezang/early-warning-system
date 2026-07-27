@@ -3,7 +3,7 @@ import React from "react";
 const AdminStudentRow = ({ student }) => {
   return (
     <tr className="hover:bg-gray-50 transition-colors duration-150">
-      <td className="px-4 sm:px-6 py-3 sm:py-4 font-semibold text-sm text-gray-900 whitespace-nowrap">
+      <td className="hidden sm:table-cell px-4 sm:px-6 py-3 sm:py-4 font-semibold text-sm text-gray-900 whitespace-nowrap">
         {student.studentId}
       </td>
       <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-700 whitespace-nowrap">
@@ -15,7 +15,7 @@ const AdminStudentRow = ({ student }) => {
       <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-700 whitespace-nowrap">
         {student.programme}
       </td>
-      <td className="px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-700 whitespace-nowrap">
+      <td className="hidden sm:table-cell px-4 sm:px-6 py-3 sm:py-4 text-sm text-gray-700 whitespace-nowrap">
         {student.className}
       </td>
     </tr>

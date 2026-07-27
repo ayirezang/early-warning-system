@@ -55,19 +55,24 @@ const StudentTable = ({ refresh }) => {
       </div>
       {/* table wrapper */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-150">
+        <table className="w-full sm:min-w-150">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              {["Student ID", "Name", "SBA Score", "Exam Score", "Status"].map(
-                (heading) => (
-                  <th
-                    key={heading}
-                    className="text-left text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wide px-4 sm:px-6 py-3 sm:py-4"
-                  >
-                    {heading}
-                  </th>
-                ),
-              )}
+              <th className="hidden sm:table-cell text-left text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wide px-4 sm:px-6 py-3 sm:py-4">
+                Student ID
+              </th>
+              <th className="text-left text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wide px-4 sm:px-6 py-3 sm:py-4">
+                Name
+              </th>
+              <th className="hidden sm:table-cell text-left text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wide px-4 sm:px-6 py-3 sm:py-4">
+                SBA Score
+              </th>
+              <th className="hidden sm:table-cell text-left text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wide px-4 sm:px-6 py-3 sm:py-4">
+                Exam Score
+              </th>
+              <th className="text-left text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wide px-4 sm:px-6 py-3 sm:py-4">
+                Status
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
