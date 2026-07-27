@@ -17,6 +17,10 @@ app.use(
 );
 
 app.use(express.json());
+
+// Health check
+app.get("/", (req, res) => res.json({ status: "ok", timestamp: new Date().toISOString() }));
+
 //use routes
 app.use("/api", riskRoutes);
 app.use("/api", userRoutes);

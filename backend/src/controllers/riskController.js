@@ -3,35 +3,82 @@ import Student from "../models/student.js";
 import SubjectScore from "../models/subjectScoreModel.js";
 import axios from "axios";
 import path from "path";
+import os from "os";
 import { createAgentSession } from "@earendil-works/pi-coding-agent";
-import { existsSync,readdirSync } from "fs";
+import { existsSync, readdirSync, mkdirSync, writeFileSync, chmodSync } from "fs";
+
+// Bootstrap pi agent config so it works even without ~/.pi/agent/ pre-configured
+function ensurePiAgentConfig() {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) {
+    console.warn("OPENROUTER_API_KEY not set — agentic AI will fall back to rule-based");
+    return;
+  }
+  const piDir = path.join(os.homedir(), ".pi", "agent");
+  const authPath = path.join(piDir, "auth.json");
+  const settingsPath = path.join(piDir, "settings.json");
+
+  if (!existsSync(piDir)) mkdirSync(piDir, { recursive: true });
+
+  if (!existsSync(authPath)) {
+    writeFileSync(authPath, JSON.stringify({ openrouter: { type: "api_key", key: apiKey } }), {
+      encoding: "utf-8",
+      mode: 0o600,
+    });
+    chmodSync(authPath, 0o600);
+  }
+  if (!existsSync(settingsPath)) {
+    writeFileSync(
+      settingsPath,
+      JSON.stringify({
+        defaultProvider: "openrouter",
+        defaultModel: "cohere/north-mini-code:free",
+        maxTokens: 4096,
+        defaultThinkingLevel: "high",
+      }),
+      { encoding: "utf-8", mode: 0o600 },
+    );
+  }
+}
 
 // Fallback rule-based prediction
 function getRuleBasedPrediction(sbaScore, examScore) {
   const totalScore = sbaScore * 0.3 + examScore * 0.7;
+  const isHighRisk = totalScore < 50 || sbaScore < 45 || examScore < 45;
   return {
     willFailSubject: totalScore < 50,
-    riskCategory: totalScore >= 50 ? "LOW" : "HIGH",
-    explanation:
-      "Rule-based prediction: If total score < 50, student is at risk of failing. Otherwise, low risk.",
+    riskCategory: isHighRisk ? "HIGH" : "LOW",
+    riskPercent: Math.round(totalScore),
+    explanation: isHighRisk
+      ? `Student is at risk with a weighted score of ${Math.round(totalScore)}%. Requires immediate intervention.`
+      : `Student is on track with a weighted score of ${Math.round(totalScore)}%.`,
+    rootCause: sbaScore < examScore
+      ? "Performance is weaker in Continuous Assessment (SBA) compared to exams."
+      : "Performance is weaker in Exams compared to Continuous Assessment (SBA).",
+    remedialPlan: [
+      "Schedule one-on-one tutoring sessions focused on weak areas.",
+      "Provide additional practice exercises and past question papers.",
+      "Monitor progress through weekly quizzes and feedback sessions.",
+    ],
+    suggestedQuizTopics: [
+      "Core subject fundamentals",
+      "Problem-solving techniques",
+    ],
     source: "rule-based",
   };
 }
 
 // Get AI prediction using Pi Coding Agent
 async function getAIPrediction(sbaScore, examScore, studentName, subjectName) {
+  ensurePiAgentConfig();
   const workspaceDir = path.resolve("./agent-home");
-//new
 
 console.log("Resolved workspaceDir:", workspaceDir);
 console.log("Contents:", existsSync(workspaceDir) ? readdirSync(workspaceDir) : "MISSING");
 console.log("AGENTS.md exists?", existsSync(path.join(workspaceDir, "AGENTS.md")));
-console.log("Resolved workspaceDir:", workspaceDir);
-console.log("AGENTS.md exists?", existsSync(path.join(workspaceDir, "AGENTS.md")));
 console.log("brain.md exists?", existsSync(path.join(workspaceDir, "brain", "brain.md")));
   const { session } = await createAgentSession({
-    workspaceDir: workspaceDir,
-    configPath: path.join(workspaceDir, "AGENTS.md"),
+    cwd: workspaceDir,
   });
 
   let responseText = "";
